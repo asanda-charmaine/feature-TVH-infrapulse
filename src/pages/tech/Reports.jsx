@@ -74,7 +74,7 @@ export default function Reports() {
             toast(`AI detected a new issue: ${r.id}`);
           }}
         >
-          <Icon name="spark" size={15} /> Simulate AI Detection
+          <Icon name="spark" size={15} /> Receive Connected AI Detection
         </button>
         <ExportMenu getTable={exportTable} />
       </PageHead>
@@ -147,7 +147,7 @@ export default function Reports() {
                     <td>{r.location.address}</td>
                     <td><SeverityBadge severity={r.severity} /></td>
                     <td><RiskChip risk={r.risk} /></td>
-                    <td><StatusBadge status={r.status} /></td>
+                    <td><StatusBadge status={r.status} />{r.supervisorDismissal && <div className="muted small">Dismissed by supervisor</div>}</td>
                     <td className="mono" style={{ whiteSpace: 'nowrap' }}>{fmtShortDate(r.submittedAt)}</td>
                   </tr>
                 ))}

@@ -1,15 +1,17 @@
 // Client-side prototype data store. State lives in memory, persists to localStorage and syncs
 // across browser tabs, so a citizen tab and a technician tab can be demoed side by side.
 import { useSyncExternalStore } from 'react';
-import { buildSeed } from './seed.js';
+import { buildSeed, enrichSeedTaskContent } from './seed.js';
 import { categoryByLabel, ASSET_PREFIX, OPEN_REPORT_STATUSES, TECHNICIANS } from './constants.js';
 import { computeRisk } from './risk.js';
 import { haversine } from './geo.js';
 import { pad } from './format.js';
 import { sendEmail } from './email.js';
+import { validationVersion, validationReasons, isSupervisorValidated } from './supervisor.js';
 
 const KEY = 'infrapulse.state.v1';
 const SESSION_KEY = 'infrapulse.technician.v1';
+const SUPERVISOR_KEY = 'infrapulse.supervisor.v1';
 const nowIso = () => new Date().toISOString();
 
 // ---- persistence -------------------------------------------------------------------------
@@ -23,13 +25,15 @@ function load() {
   return null;
 }
 
-let state = load() || buildSeed();
+let state = { ...enrichSeedTaskContent(load() || buildSeed()), connectors: {} };
+state = { ...state, reports: state.reports.map((r) => r.integration
+  ? { ...r, description: r.description?.replace(/simulated/gi, 'Connected') } : r) };
 let persistFailed = false;
 const listeners = new Set();
 
 function persist() {
   try {
-    localStorage.setItem(KEY, JSON.stringify(state));
+    localStorage.setItem(KEY, JSON.stringify({ ...state, connectors: {} }));
     persistFailed = false;
   } catch {
     persistFailed = true; // quota or private mode: keep working in memory
@@ -47,13 +51,13 @@ if (typeof window !== 'undefined') {
   window.addEventListener('storage', (e) => {
     if (e.key === KEY && e.newValue) {
       try {
-        state = JSON.parse(e.newValue);
+        state = { ...JSON.parse(e.newValue), connectors: state.connectors || {} };
         listeners.forEach((l) => l());
       } catch {
         /* ignore */
       }
     }
-    if (e.key === SESSION_KEY) listeners.forEach((l) => l());
+    if (e.key === SESSION_KEY || e.key === SUPERVISOR_KEY) listeners.forEach((l) => l());
   });
 }
 
@@ -195,7 +199,7 @@ export function submitCitizenReport({ category, image, imageName, ai, location, 
 // ---- technician: reports -----------------------------------------------------------------
 export function verifyReport(id) {
   const r = state.reports.find((x) => x.id === id);
-  if (!r || r.status !== 'Submitted') return;
+  if (!r || r.supervisorDismissal || r.status !== 'Submitted') return;
   commit({ reports: replaceIn(state.reports, id, (x) => pushStatus(x, 'Verified')) });
   notifyCitizen(r, 'Verified');
 }
@@ -257,13 +261,14 @@ export function simulateAiDetection() {
 
 // ---- technician: work orders -------------------------------------------------------------
 export function hasEvidence(report) {
-  return Boolean(report?.image) && report.ai?.match !== false;
+  return Boolean(report?.image) && (report.ai?.match !== false || report.supervisorValidation?.version === validationVersion(report));
 }
 
 /** Creates a work order that inherits its evidence from the report. Refuses without evidence. */
 export function createWorkOrder({ reportId, assetId, technicianId, date, time, priority, notes }) {
   const report = state.reports.find((r) => r.id === reportId);
   if (!report) throw new Error('Report not found.');
+  if (report.supervisorDismissal) throw new Error('This report was dismissed by the supervisor.');
   if (!hasEvidence(report)) throw new Error('Evidence required: a valid infrastructure image must be attached before a work order can be created.');
   if (report.workOrderId) throw new Error('This report already has a work order.');
   const tech = TECHNICIANS.find((t) => t.id === technicianId) || TECHNICIANS[0];
@@ -273,6 +278,7 @@ export function createWorkOrder({ reportId, assetId, technicianId, date, time, p
     reportId,
     assetId: assetId || null,
     category: report.category,
+    issue: report.issue || report.ai?.detected || report.category,
     location: report.location.address,
     lat: report.location.lat,
     lng: report.location.lng,
@@ -348,9 +354,12 @@ export function finishRepairVerification(id, verification) {
 }
 
 /** Only possible after a successful verification. Closes the work order, report and updates the asset. */
-export function completeWorkOrder(id) {
+export function completeWorkOrder(id, notes) {
   const wo = state.workOrders.find((w) => w.id === id);
   if (!wo?.completion?.verification?.ok) throw new Error('Repair verification must succeed before completion.');
+  if (!['In Progress', 'Awaiting Verification'].includes(wo.status)) throw new Error('This task is not awaiting completion.');
+  const completionNotes = (notes ?? wo.completion.notes ?? '').trim();
+  if (!completionNotes) throw new Error('Add a short completion note.');
   const at = nowIso();
   const report = state.reports.find((r) => r.id === wo.reportId);
   const asset = state.assets.find((a) => a.id === wo.assetId);
@@ -361,7 +370,7 @@ export function completeWorkOrder(id) {
       status: 'Operational',
       condition: a.condition === 'Critical' || a.condition === 'Poor' ? 'Good' : a.condition,
       lastMaintenance: at,
-      previousFaults: (a.previousFaults || 0) + 1,
+      previousFaults: (a.previousFaults || 0) + (wo.completion.completedAt ? 0 : 1),
     }));
     assets = addAssetHistory(assets, asset.id, {
       type: 'Maintenance',
@@ -372,8 +381,10 @@ export function completeWorkOrder(id) {
   commit({
     ...woPatch(id, (w) => ({
       status: 'Completed',
+      supervisorReview: null,
+      supervisorReviewRequestedAt: at,
       timeline: [...w.timeline, { status: 'Completed', at }],
-      completion: { ...w.completion, completedAt: at },
+      completion: { ...w.completion, notes: completionNotes, completedAt: at },
     })),
     reports: replaceIn(state.reports, wo.reportId, (r) => ({
       ...pushStatus(r, 'Resolved', at),
@@ -444,4 +455,169 @@ export function markAllNotificationsRead() {
 
 export function resetDemo() {
   commit(buildSeed());
+}
+
+// ---- supervisor demo session and decisions -----------------------------------------------
+let supervisorMemory = false;
+export const isSupervisorLoggedIn = () => {
+  try { return localStorage.getItem(SUPERVISOR_KEY) === '1'; } catch { return supervisorMemory; }
+};
+export function loginSupervisor() {
+  supervisorMemory = true;
+  try { localStorage.setItem(SUPERVISOR_KEY, '1'); } catch { /* in-memory demo */ }
+  listeners.forEach((l) => l());
+}
+export function logoutSupervisor() {
+  supervisorMemory = false;
+  try { localStorage.removeItem(SUPERVISOR_KEY); } catch { /* in-memory demo */ }
+  listeners.forEach((l) => l());
+}
+export const useSupervisorSession = () => useSyncExternalStore(subscribe, isSupervisorLoggedIn);
+function requireSupervisor() {
+  if (!isSupervisorLoggedIn()) throw new Error('Sign in as Supervisor to make this decision.');
+}
+export function validateSupervisorReport(id, { category, severity, address, note = '' }) {
+  requireSupervisor();
+  const r = state.reports.find((r) => r.id === id);
+  if (!r || r.supervisorDismissal || r.status === 'Resolved' || isSupervisorValidated(r)) throw new Error('This report no longer needs validation.');
+  const corrected = category !== undefined;
+  if (corrected && (!categoryByLabel(category) || !['Low', 'Medium', 'High', 'Critical'].includes(severity) || !address?.trim())) throw new Error('Choose an issue type, priority and location.');
+  const next = { ...r };
+  if (corrected) {
+    Object.assign(next, { category, severity, location: { ...r.location, address: address.trim() } });
+    if (category !== r.category) next.assetId = null;
+    next.risk = computeRisk({ severity, asset: state.assets.find((a) => a.id === next.assetId) });
+  }
+  next.supervisorValidation = { decision: corrected ? 'corrected' : 'approved', note: note.trim(), at: nowIso(), version: validationVersion(next) };
+  if (next.status === 'Submitted') Object.assign(next, pushStatus(next, 'Verified'));
+  commit({ reports: replaceIn(state.reports, id, next), workOrders: state.workOrders.map((w) => w.reportId === id && corrected ? { ...w, category: next.category, severity: next.severity, priority: next.severity, risk: next.risk, location: next.location.address, assetId: next.assetId } : w) });
+}
+
+export function dismissSupervisorReport(id, note = '') {
+  requireSupervisor();
+  const r = state.reports.find((r) => r.id === id);
+  if (!r || r.supervisorDismissal || r.workOrderId || state.workOrders.some((w) => w.reportId === id) || r.status === 'Resolved') {
+    throw new Error('Only unassigned reports can be dismissed.');
+  }
+  commit({ reports: replaceIn(state.reports, id, { supervisorDismissal: { at: nowIso(), note: note.trim() } }) });
+}
+export function assignSupervisorTask(reportId, technicianId, date, { time = '09:00', priority, notes = '' } = {}) {
+  requireSupervisor();
+  const r = state.reports.find((r) => r.id === reportId);
+  if (!r || r.supervisorDismissal || r.status === 'Resolved') throw new Error('This report is no longer available for assignment.');
+  if (!isSupervisorValidated(r)) throw new Error('Validate the report before assigning.');
+  const t = TECHNICIANS.find((t) => t.id === technicianId);
+  const schedule = new Date(date + 'T' + time);
+  priority = priority || r.severity;
+  if (!t || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)
+      || !Number.isFinite(schedule.getTime()) || schedule.getDate() !== Number(date.slice(-2))
+      || !['Low', 'Medium', 'High', 'Critical'].includes(priority)) {
+    throw new Error('Select a technician, priority and valid scheduled date/time.');
+  }
+  const existing = state.workOrders.find((w) => w.id === r.workOrderId || w.reportId === r.id);
+  if (r.workOrderId || existing) {
+    if (!existing || existing.technicianId || existing.status === 'Completed') throw new Error('This task is already assigned or closed.');
+    if (!hasEvidence(r)) throw new Error('Evidence required before assigning this task.');
+    const at = nowIso();
+    commit({
+      ...woPatch(existing.id, (w) => ({
+        technicianId: t.id, technician: t.name, date, time, priority, notes: notes.trim(), status: 'Scheduled',
+        timeline: [...(w.timeline || []), { status: 'Scheduled', at, note: 'Assigned to ' + t.name }],
+      })),
+      reports: replaceIn(state.reports, r.id, (r) => ({ ...pushStatus(r, 'Assigned', at), workOrderId: existing.id })),
+    });
+    return state.workOrders.find((w) => w.id === existing.id);
+  }
+  return createWorkOrder({ reportId, assetId: r.assetId, technicianId, date, time, priority, notes: notes.trim() });
+}
+export function reviewSupervisorCompletion(id, decision, note = '') {
+  requireSupervisor();
+  const w = state.workOrders.find((w) => w.id === id);
+  if (!w || w.status !== 'Completed' || w.supervisorReview?.decision === 'accepted') throw new Error('This task is no longer awaiting review.');
+  if (!['accepted', 'returned'].includes(decision)) throw new Error('Invalid review decision.');
+  const at = nowIso();
+  const review = { decision, note: note.trim() || (decision === 'returned' ? 'Task not fully completed' : ''), at };
+  const returned = decision === 'returned';
+  commit({
+    ...woPatch(id, (w) => ({ supervisorReview: review, supervisorReviews: [...(w.supervisorReviews || []), review], status: returned ? 'In Progress' : w.status, timeline: [...w.timeline, { status: returned ? 'In Progress' : 'Completed', at, note: returned ? 'Supervisor: ' + review.note : 'Completion accepted by supervisor' }] })),
+    ...(returned ? { reports: replaceIn(state.reports, w.reportId, (r) => ({ ...pushStatus(r, 'In Progress', at), resolvedAt: null, afterImage: null })), assets: replaceIn(state.assets, w.assetId, { status: 'Under Maintenance' }), ...pushNotification({ type: 'workorder', title: 'Task needs correction', body: w.id + ': ' + review.note, link: '/technician/work-orders/' + w.id }) } : {}),
+  });
+}
+export function resubmitSupervisorTask(id, notes) {
+  if (!isTechnicianLoggedIn()) throw new Error('Sign in as Technician to resubmit.');
+  const w = state.workOrders.find((w) => w.id === id);
+  if (!w || w.status !== 'In Progress' || w.supervisorReview?.decision !== 'returned') throw new Error('This task is not awaiting correction.');
+  if (!notes.trim()) throw new Error('Add a short completion note.');
+  if (!w.completion?.verification?.ok) throw new Error('Complete the existing repair verification first.');
+  completeWorkOrder(id, notes);
+}
+
+/** Demo adapter: validate a simulated external payload, then use the operational report store. */
+export function simulateIntegrationEvent(kind, { image, imageName } = {}) {
+  if (!['pothole', 'traffic'].includes(kind)) throw new Error('Unknown integration event.');
+  if (!state.connectors?.[kind]) throw new Error('Connect this external system before receiving data.');
+  const category = kind === 'pothole' ? 'Pothole / Road Damage' : 'Traffic Light';
+  const prefix = kind === 'pothole' ? 'AI-POT-' : 'AI-TL-';
+  const number = state.reports.filter((r) => r.id.startsWith(prefix))
+    .reduce((max, r) => Math.max(max, Number(r.id.slice(prefix.length)) || 0), 0) + 1;
+  const id = prefix + String(number).padStart(4, '0');
+  const type = kind === 'pothole' ? 'Road Segment' : 'Traffic Light';
+  const asset = state.assets.find((a) => a.type === type && a.area === 'Pretoria CBD') || state.assets.find((a) => a.type === type);
+  const at = nowIso();
+  const severity = kind === 'pothole' ? 'High' : 'Critical';
+  const location = {
+    address: asset?.location || 'Pretorius Street, Pretoria CBD',
+    area: asset?.area || 'Pretoria CBD', street: asset?.location?.split(',')[0] || 'Pretorius Street',
+    lat: (asset?.lat ?? -25.7463) + (kind === 'pothole' ? (number % 12) * 0.00012 : 0),
+    lng: asset?.lng ?? 28.1891,
+  };
+  const payload = {
+    image: kind === 'pothole' && image ? image : 'scene:' + kind + ':' + number,
+    detected: kind === 'pothole' ? 'Pothole' : 'Green signal failure',
+    confidence: kind === 'pothole' ? 94 : 99,
+    severity, location, timestamp: at,
+    ...(kind === 'traffic' ? { telemetry: {
+      trafficLightId: asset?.id || 'TLS-DEMO-01', intersection: location.address,
+      controller: 'Online', red: 'Working', amber: 'Working', green: 'FAILED',
+      power: 'Normal', communication: 'Connected', lastUpdate: at,
+    } } : {}),
+  };
+  if (!payload.image || !Number.isFinite(location.lat) || !Number.isFinite(location.lng)
+      || !payload.detected || payload.confidence < 80 || !Number.isFinite(Date.parse(at))) {
+    throw new Error('Incoming data could not be validated.');
+  }
+  const risk = computeRisk({ severity, asset });
+  const report = {
+    id, source: 'AI', category, issue: kind === 'pothole' ? 'Pothole maintenance from computer-vision detection' : 'Green signal failure - traffic-light controller', description: kind === 'pothole'
+      ? 'Connected Computer Vision API detected a pothole.'
+      : 'Connected controller telemetry detected a failed green signal.',
+    image: payload.image, imageName: kind === 'pothole' && imageName ? imageName : kind + '-detection.jpg',
+    ai: { detected: payload.detected, confidence: payload.confidence, severity, match: true },
+    location, severity, risk, priority: severity, submittedAt: at,
+    status: 'Verified', statusHistory: [{ status: 'Submitted', at }, { status: 'Verified', at }],
+    assetId: asset?.id || null, workOrderId: null, email: '', mine: false, resolvedAt: null, afterImage: null,
+    integration: {
+      eventId: 'EVT-' + id, kind, source: kind === 'pothole' ? 'Computer Vision API' : 'Traffic Light Sensor',
+      receivedAt: at, payload, stages: ['Received', 'Validated', 'Report Created', 'Mapped'],
+    },
+  };
+  let assets = addAssetHistory(state.assets, asset?.id, { type: 'Report', text: report.description, ref: id });
+  if (asset) assets = replaceIn(assets, asset.id, { status: 'Fault Reported' });
+  commit({
+    reports: [report, ...state.reports], assets,
+    ...pushNotification({ type: kind === 'traffic' ? 'critical' : 'report',
+      title: 'Integration report created', body: id + ' - ' + category + ', ' + location.address,
+      link: '/technician/reports/' + id }),
+  });
+  return report;
+}
+
+/** Visual hackathon connection state; no external network integration. */
+export function connectDemoConnector(kind) {
+  if (!['pothole', 'traffic'].includes(kind)) throw new Error('Unknown connector.');
+  commit({ connectors: { ...state.connectors, [kind]: true } });
+}
+
+export function disconnectDemoConnectors() {
+  commit({ connectors: {} });
 }

@@ -1784,3 +1784,8 @@ table.table {
   align-items: center;
   gap: 6px;
 }
+
+/* Keep the existing staff login controls usable on narrow screens. */
+@media (max-width: 640px) {
+  .public-nav { flex-wrap: wrap; }
+}

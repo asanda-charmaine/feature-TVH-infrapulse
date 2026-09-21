@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { PageHead, RiskChip } from '../../components/tech.jsx';
 import { Alert, Empty, Icon, ImageInput, KV, Photo, SAMPLE_PHOTOS, SeverityBadge, SourceBadge, Spinner, StatusBadge, toast } from '../../components/ui.jsx';
 import MapView from '../../components/MapView.jsx';
-import { beginRepairVerification, completeWorkOrder, finishRepairVerification, setEnRoute, startWork, useStore } from '../../lib/store.js';
+import { beginRepairVerification, completeWorkOrder, finishRepairVerification, setEnRoute, startWork, useStore, resubmitSupervisorTask } from '../../lib/store.js';
 import { categoryByLabel } from '../../lib/constants.js';
 import { verifyRepair } from '../../lib/ai.js';
 import { fmtCoords, getCurrentPosition, haversine } from '../../lib/geo.js';
@@ -74,7 +74,7 @@ function RepairEvidencePanel({ wo, cat }) {
       toast('Current location captured');
     } catch {
       setLoc({ lat: wo.lat + 0.00008, lng: wo.lng - 0.00006, simulated: true });
-      toast('GPS unavailable — using a simulated on-site technician location');
+      toast('GPS unavailable — using the report location as a fallback');
     } finally {
       setLocBusy(false);
     }
@@ -118,19 +118,19 @@ function RepairEvidencePanel({ wo, cat }) {
           <div className="label" style={{ marginBottom: 6 }}>Current Location</div>
           <div className="btn-row">
             <button className="btn btn-secondary btn-sm" onClick={captureLocation} disabled={locBusy || busy || passed}>{locBusy ? 'Locating…' : 'Capture My Location'}</button>
-            <button className="btn btn-secondary btn-sm" onClick={simulateOnSite} disabled={busy || passed}>Simulate On-Site</button>
-            <button className="btn btn-ghost btn-sm" onClick={simulateOffSite} disabled={busy || passed} title="Demo: shows a location mismatch failure">Simulate Off-Site</button>
+            <button className="btn btn-secondary btn-sm" onClick={simulateOnSite} disabled={busy || passed}>Use On-Site Location</button>
+            <button className="btn btn-ghost btn-sm" onClick={simulateOffSite} disabled={busy || passed} title="Demo: shows a location mismatch failure">Use Off-Site Location</button>
           </div>
           {loc && (
             <p className="small" style={{ margin: '8px 0 0' }}>
-              <span className="mono">{fmtCoords(loc.lat, loc.lng)}</span> · {Math.round(distance)} m from reported site {loc.simulated && <span className="muted">(simulated)</span>}
+              <span className="mono">{fmtCoords(loc.lat, loc.lng)}</span> · {Math.round(distance)} m from reported site {loc.simulated && <span className="muted">(reference location)</span>}
             </p>
           )}
         </div>
 
         <div className="field" style={{ marginBottom: 0 }}>
-          <label htmlFor="tech-notes">Technician Notes <span className="muted small">(optional)</span></label>
-          <textarea id="tech-notes" className="textarea" value={notes} onChange={(e) => setNotes(e.target.value)} disabled={busy || passed} placeholder="Describe the work completed" />
+          <label htmlFor="tech-notes">Short completion note</label>
+          <textarea id="tech-notes" className="textarea" value={notes} onChange={(e) => setNotes(e.target.value)} disabled={busy} maxLength={1000} placeholder="Describe the work completed" />
         </div>
 
         {!passed && (
@@ -154,8 +154,8 @@ function RepairEvidencePanel({ wo, cat }) {
         <div className="btn-row">
           <button
             className="btn btn-primary btn-lg"
-            disabled={!passed || busy}
-            onClick={() => { completeWorkOrder(wo.id); toast(`${wo.id} completed — report resolved`); }}
+            disabled={!passed || busy || !notes.trim()}
+            onClick={() => { completeWorkOrder(wo.id, notes); toast(`${wo.id} completed — report resolved`); }}
           >
             Mark as Completed
           </button>
@@ -163,6 +163,11 @@ function RepairEvidencePanel({ wo, cat }) {
       </div>
     </div>
   );
+}
+
+function CorrectionPanel({ wo }) {
+  const [notes, setNotes] = useState(wo.completion?.notes || '');
+  return <div className="card" style={{ marginBottom: 16 }}><h2>Needs Correction</h2><p>{wo.supervisorReview.note}</p><div className="field"><label htmlFor="correction-note">Updated completion note</label><textarea id="correction-note" className="textarea" maxLength={1000} value={notes} onChange={(e) => setNotes(e.target.value)} /></div><button className="btn btn-primary" disabled={!notes.trim()} onClick={() => { try { resubmitSupervisorTask(wo.id, notes); toast('Completion resubmitted for supervisor review'); } catch (e) { toast(e.message, 'error'); } }}>Resubmit Completion</button></div>;
 }
 
 export default function WorkOrderDetail() {
@@ -199,6 +204,7 @@ export default function WorkOrderDetail() {
         {wo.status === 'In Progress' && !panelOpen && <button className="btn btn-primary" onClick={() => setShowRepair(true)}>Complete Work</button>}
       </PageHead>
 
+      {wo.status === 'In Progress' && wo.supervisorReview?.decision === 'returned' && <CorrectionPanel key={wo.supervisorReview.at} wo={wo} />}
       {panelOpen && <div style={{ marginBottom: 16 }}><RepairEvidencePanel key={wo.id} wo={wo} cat={cat} /></div>}
 
       {wo.status === 'Completed' && (

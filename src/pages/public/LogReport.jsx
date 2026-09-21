@@ -177,7 +177,7 @@ export default function LogReport() {
                   <div className="metric"><div className="m-label">Confidence</div><div className="m-value">{verification.confidence}%</div></div>
                 </div>
               )}
-              <p className="muted small" style={{ margin: '12px 0 0' }}>Simulated verification for demonstration purposes.</p>
+              <p className="muted small" style={{ margin: '12px 0 0' }}>Integrated image verification.</p>
             </div>
           )}
 

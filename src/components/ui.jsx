@@ -366,7 +366,7 @@ export function ExportMenu({ getTable, label = 'Export' }) {
     } catch (err) {
       // Exports must never break the demo: report a simulated success if generation fails.
       console.error(err);
-      toast(`${format.toUpperCase()} export prepared (simulated)`);
+      toast(`${format.toUpperCase()} export could not be generated`);
     } finally {
       setBusy(false);
     }

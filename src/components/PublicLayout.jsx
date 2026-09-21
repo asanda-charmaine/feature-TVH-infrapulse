@@ -1,17 +1,17 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LogoMark } from './ui.jsx';
-import { loginTechnician } from '../lib/store.js';
+import { loginTechnician, loginSupervisor } from '../lib/store.js';
 
-export function TechnicianLoginButton({ className = 'tech', children = 'Technician Login' }) {
+export function TechnicianLoginButton({ className = 'tech', children = 'Technician Login', staffRole = 'technician' }) {
   const navigate = useNavigate();
   // Demo shortcut: no credentials are collected. One click signs in as the demo technician.
   const go = (e) => {
     e.preventDefault();
-    loginTechnician();
-    navigate('/technician/dashboard');
+    (staffRole === 'supervisor' ? loginSupervisor : loginTechnician)();
+    navigate('/' + staffRole + '/dashboard');
   };
   return (
-    <a href="/technician/dashboard" className={className} onClick={go} role="button">
+    <a href={'/' + staffRole + '/dashboard'} className={className} onClick={go} role="button">
       {children}
     </a>
   );
@@ -31,6 +31,7 @@ export default function PublicLayout() {
             <NavLink to="/report" className={({ isActive }) => `link ${isActive ? 'active' : ''}`}>Log Report</NavLink>
             <NavLink to="/history" className={({ isActive }) => `link ${isActive ? 'active' : ''}`}>Report History</NavLink>
             <TechnicianLoginButton />
+            <TechnicianLoginButton staffRole="supervisor">Supervisor Login</TechnicianLoginButton>
           </nav>
         </div>
       </header>

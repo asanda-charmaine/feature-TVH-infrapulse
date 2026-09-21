@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PageHead } from '../../components/tech.jsx';
 import { Empty, ExportMenu, SeverityBadge, StatusBadge, Icon } from '../../components/ui.jsx';
 import { useStore } from '../../lib/store.js';
-import { WORK_ORDER_STATUSES } from '../../lib/constants.js';
+import { WORK_ORDER_STATUSES, TECHNICIANS } from '../../lib/constants.js';
 import { toDateInput } from '../../lib/format.js';
 
 export default function WorkOrders() {
@@ -11,15 +11,17 @@ export default function WorkOrders() {
   const navigate = useNavigate();
   const [q, setQ] = useState('');
   const [status, setStatus] = useState('All');
+  const [technicianId, setTechnicianId] = useState('');
+  const technicianOrders = useMemo(() => workOrders.filter((w) => !technicianId || w.technicianId === technicianId), [workOrders, technicianId]);
   const today = toDateInput();
 
-  const counts = useMemo(() => Object.fromEntries(WORK_ORDER_STATUSES.map((s) => [s, workOrders.filter((w) => w.status === s).length])), [workOrders]);
+  const counts = useMemo(() => Object.fromEntries(WORK_ORDER_STATUSES.map((s) => [s, technicianOrders.filter((w) => w.status === s).length])), [technicianOrders]);
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    return workOrders
+    return technicianOrders
       .filter((w) => (status === 'All' || w.status === status) && (!needle || [w.id, w.reportId, w.assetId, w.location, w.category, w.technician].some((f) => String(f || '').toLowerCase().includes(needle))))
       .sort((a, b) => `${b.date} ${b.time}`.localeCompare(`${a.date} ${a.time}`));
-  }, [workOrders, q, status]);
+  }, [technicianOrders, q, status]);
 
   const exportTable = () => ({
     name: 'infrapulse_work_orders',
@@ -35,13 +37,14 @@ export default function WorkOrders() {
       </PageHead>
 
       <div className="toolbar">
+        <select className="select" aria-label="Filter by technician" value={technicianId} onChange={(e) => setTechnicianId(e.target.value)}><option value="">All technicians</option>{TECHNICIANS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}</select>
         <div className="search">
           <span className="search-ico"><Icon name="search" size={16} /></span>
           <input className="input" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search work order, report, asset, technician or location" aria-label="Search work orders" />
         </div>
       </div>
       <div className="filters">
-        <button className={`chip ${status === 'All' ? 'on' : ''}`} onClick={() => setStatus('All')}>All ({workOrders.length})</button>
+        <button className={`chip ${status === 'All' ? 'on' : ''}`} onClick={() => setStatus('All')}>All ({technicianOrders.length})</button>
         {WORK_ORDER_STATUSES.map((s) => (
           <button key={s} className={`chip ${status === s ? 'on' : ''}`} onClick={() => setStatus(s)}>{s} ({counts[s]})</button>
         ))}
