@@ -356,7 +356,35 @@ export function buildSeed() {
     { id: 'AREA-1', name: 'CBD signal upgrade zone', lat: -25.7463, lng: 28.1891, radius: 450, note: 'Planned signal controller upgrades this quarter.' },
   ];
 
-  return { reports, assets, workOrders, notifications, areas };
+  return enrichSeedTaskContent({ reports, assets, workOrders, notifications, areas, connectors: {} });
 }
 
 export const SEED_CATEGORIES = CATEGORIES;
+
+export function enrichSeedTaskContent(state) {
+  const issues = [
+    'Traffic-light sensor fault - sensor maintenance',
+    'Damaged sensor - sensor replacement',
+    'Sensor communication failure - connectivity fault',
+    'Offline sensor - restore connection',
+    'Failed controller - controller inspection',
+    'Blown traffic-light lamp - lamp replacement',
+    'Red signal failure',
+    'Amber signal failure',
+    'Green signal failure',
+    'Power fault - inspect traffic-light supply',
+    'Damaged traffic-light equipment',
+    'Sensor maintenance - intermittent readings',
+    'Sensor replacement - faulty detector',
+  ];
+  let index = 0;
+  const reports = state.reports.map((r) => {
+    const seedNumber = Number(r.id.match(/^INF-2026-(\d+)$/)?.[1]);
+    if (!seedNumber || seedNumber > 421 || r.issue || !r.workOrderId) return r;
+    if (r.category === 'Traffic Light') return { ...r, issue: issues[index++ % issues.length] };
+    if (r.category === 'Pothole / Road Damage' && r.source === 'AI') return { ...r, issue: 'Pothole maintenance from computer-vision detection' };
+    return r;
+  });
+  const byId = new Map(reports.map((r) => [r.id, r]));
+  return { ...state, reports, workOrders: state.workOrders.map((w) => w.issue || !byId.get(w.reportId)?.issue ? w : { ...w, issue: byId.get(w.reportId).issue }) };
+}

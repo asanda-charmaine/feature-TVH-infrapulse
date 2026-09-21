@@ -66,3 +66,16 @@ src/lib/           store (state + actions), seed data, simulated AI, risk, geo, 
 src/components/    layouts, UI kit, charts, Leaflet map wrapper, forms/modals
 src/pages/public/  citizen pages          src/pages/tech/  technician pages
 ```
+
+
+## Supervisor
+
+Use **Supervisor Login** in the existing header. The existing dashboard now has **Incoming Tasks**, **Validated Tasks**, **Assigned Tasks**, **In Progress**, and **Completed Tasks** views. No new pages or authentication system are required.
+
+1. Incoming Tasks combines existing citizen and AI reports, including reports whose image has already been verified. Source badges identify each report. Existing seeded AI reports are available for the demo.
+2. Open a report to review its image, location, category, severity, risk, date, status and AI result. **Accept / Validate** records supervisor approval and uses the existing **Verified** report status. The item moves to Validated Tasks, and the open dialog displays the assignment form. **Reject / Dismiss** retains the report and reason but removes it from the assignment queues.
+3. **Assign Technician** uses existing technicians and expertise/load suggestions. Choose priority, scheduled date/time and optional notes. Assignment creates the existing **Scheduled** work order and sets the report to **Assigned**.
+4. Open Technician Login > Work Orders, then use the technician filter to find that technician's assignments. Complete the existing repair flow.
+5. The supervisor sees assigned work, in-progress work and completed tasks. Accept Completion and Send Back still work; accepted completions remain visible for progress tracking.
+
+The shared work-order store persists to localStorage and syncs across tabs. This remains a hackathon demo with browser-local sessions. Dismissal is supervisor metadata, preserving existing report statuses and evidence. Workflow checks: `node --test src/lib/supervisor.test.js`.

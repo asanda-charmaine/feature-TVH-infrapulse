@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import IntegrationDemo from '../../components/IntegrationDemo.jsx';
 import { Icon } from '../../components/ui.jsx';
 
 export default function Home() {
@@ -19,6 +20,8 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      <IntegrationDemo />
 
       <section className="how" aria-label="How it works">
         <div className="card">

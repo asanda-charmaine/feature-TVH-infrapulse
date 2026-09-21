@@ -29,7 +29,7 @@ export default function TechReportDetail() {
   const wo = state.workOrders.find((w) => w.id === r.workOrderId);
   const cat = categoryByLabel(r.category);
   const evidence = hasEvidence(r);
-  const eligible = !r.workOrderId && (r.status === 'Submitted' || r.status === 'Verified');
+  const eligible = !r.supervisorDismissal && !r.workOrderId && (r.status === 'Submitted' || r.status === 'Verified');
   const sameTypeAssets = state.assets
     .filter((a) => a.type === cat.assetType)
     .map((a) => ({ a, d: haversine(r.location.lat, r.location.lng, a.lat, a.lng) }))
@@ -45,7 +45,7 @@ export default function TechReportDetail() {
     <>
       <div className="small" style={{ marginBottom: 8 }}><Link to="/technician/reports">← Reports</Link></div>
       <PageHead title={r.id} sub={`${r.category} · ${r.location.address}`}>
-        {r.status === 'Submitted' && (
+        {!r.supervisorDismissal && r.status === 'Submitted' && (
           <button className="btn btn-secondary" onClick={() => { verifyReport(r.id); toast('Report verified'); }}>Verify Report</button>
         )}
         {eligible && (
@@ -54,6 +54,7 @@ export default function TechReportDetail() {
         {wo && <Link className="btn btn-navy" to={`/technician/work-orders/${wo.id}`}>Open Work Order {wo.id}</Link>}
       </PageHead>
 
+      {r.supervisorDismissal && <Alert kind="info" title="Dismissed by supervisor">{r.supervisorDismissal.note || 'This report does not require a work order.'}</Alert>}
       {!evidence && (
         <div style={{ marginBottom: 16 }}>
           <Alert kind="warn" title="Evidence Required" action={eligible ? <button className="btn btn-primary btn-sm" onClick={() => setModal('evidence')}>Attach Evidence</button> : null}>

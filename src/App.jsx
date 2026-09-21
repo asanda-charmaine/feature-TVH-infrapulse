@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ToastHost } from './components/ui.jsx';
 import PublicLayout from './components/PublicLayout.jsx';
 import TechLayout from './components/TechLayout.jsx';
+import SupervisorDashboard from './pages/supervisor/Dashboard.jsx';
 
 import Home from './pages/public/Home.jsx';
 import LogReport from './pages/public/LogReport.jsx';
@@ -58,6 +59,14 @@ export default function App() {
           <Route path="analytics" element={<Analytics />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="profile" element={<Profile />} />
+        </Route>
+
+        <Route path="/supervisor" element={<TechLayout supervisor />}>
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<SupervisorDashboard key="dashboard" />} />
+          <Route path="review" element={<SupervisorDashboard key="review" view="review" />} />
+          <Route path="assign" element={<SupervisorDashboard key="assign" view="assign" />} />
+          <Route path="assigned" element={<SupervisorDashboard key="assigned" view="assigned" />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
