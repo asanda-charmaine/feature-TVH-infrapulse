@@ -1,0 +1,429 @@
+record_id,category,status,severity,area,reported_date,closed_date,resolution_days
+SR-10001,Traffic Light,Verified,High,Brooklyn,2026-06-29,,
+SR-10002,Stormwater Drain,Assigned,Medium,Waterkloof,2026-07-02,,
+SR-10003,Traffic Light,Resolved,High,Pretoria CBD,2026-07-05,2026-07-06,0.8
+SR-10004,Traffic Light,Resolved,Low,Waterkloof,2026-06-09,2026-06-12,2.5
+SR-10005,Street Light,Resolved,Medium,Sunnyside,2026-08-13,2026-08-14,1.4
+SR-10006,Stormwater Drain,Assigned,Medium,Pretoria CBD,2026-07-25,,
+SR-10007,Traffic Light,Resolved,Medium,Hatfield,2026-09-15,2026-09-16,1.1
+SR-10008,Traffic Light,Resolved,Low,Brooklyn,2026-07-24,2026-07-27,2.8
+SR-10009,Street Light,In Progress,High,Brooklyn,2026-07-04,,
+SR-10010,Street Light,Resolved,High,Hatfield,2026-09-09,2026-09-10,2.0
+SR-10011,Pothole / Road Damage,Resolved,Critical,Hatfield,2026-07-04,2026-07-08,4.4
+SR-10012,Street Light,Submitted,Medium,Menlo Park,2026-04-06,,
+SR-10013,Pothole / Road Damage,Resolved,Low,Centurion,2026-07-25,2026-07-29,3.7
+SR-10014,Road Signage,Submitted,Low,Centurion,2026-08-16,,
+SR-10015,Pothole / Road Damage,Resolved,Low,Waterkloof,2026-08-09,2026-08-12,3.6
+SR-10016,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-04-19,2026-04-21,1.8
+SR-10017,Traffic Light,Resolved,Medium,Pretoria CBD,2026-07-30,2026-08-03,4.0
+SR-10018,Street Light,Verified,High,Hatfield,2026-03-09,,
+SR-10019,Pothole / Road Damage,In Progress,Low,Soshanguve,2026-05-19,,
+SR-10020,Pothole / Road Damage,In Progress,High,Centurion,2026-09-12,,
+SR-10021,Street Light,Assigned,Low,Centurion,2026-08-24,,
+SR-10022,Pothole / Road Damage,Assigned,Medium,Arcadia,2026-06-19,,
+SR-10023,Traffic Light,Resolved,Low,Hatfield,2026-09-11,2026-09-13,1.8
+SR-10024,Pothole / Road Damage,Resolved,Medium,Soshanguve,2026-05-10,2026-05-13,2.4
+SR-10025,Pothole / Road Damage,In Progress,Low,Arcadia,2026-08-24,,
+SR-10026,Street Light,Resolved,Low,Pretoria West,2026-03-29,2026-03-31,2.0
+SR-10027,Stormwater Drain,Resolved,High,Sunnyside,2026-07-17,2026-07-20,2.6
+SR-10028,Pothole / Road Damage,Assigned,Low,Centurion,2026-06-10,,
+SR-10029,Pothole / Road Damage,Resolved,Low,Brooklyn,2026-06-08,2026-06-13,4.5
+SR-10030,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-08-05,2026-08-07,2.6
+SR-10031,Pothole / Road Damage,Assigned,Medium,Pretoria CBD,2026-04-19,,
+SR-10032,Pothole / Road Damage,Resolved,Medium,Hatfield,2026-07-11,2026-07-12,1.3
+SR-10033,Traffic Light,Verified,Low,Menlo Park,2026-03-25,,
+SR-10034,Street Light,Resolved,Medium,Mamelodi,2026-05-28,2026-05-31,3.0
+SR-10035,Street Light,Resolved,Medium,Brooklyn,2026-06-04,2026-06-07,2.7
+SR-10036,Traffic Light,Resolved,Medium,Menlo Park,2026-06-02,2026-06-03,1.0
+SR-10037,Traffic Light,In Progress,Medium,Arcadia,2026-07-28,,
+SR-10038,Road Signage,Resolved,Low,Centurion,2026-07-24,2026-07-26,2.4
+SR-10039,Stormwater Drain,Resolved,Medium,Arcadia,2026-06-21,2026-06-23,2.1
+SR-10040,Pothole / Road Damage,Resolved,High,Pretoria CBD,2026-03-13,2026-03-15,2.4
+SR-10041,Street Light,Verified,Low,Pretoria CBD,2026-04-05,,
+SR-10042,Traffic Light,Resolved,Medium,Mamelodi,2026-07-11,2026-07-12,1.3
+SR-10043,Pothole / Road Damage,In Progress,Low,Waterkloof,2026-03-20,,
+SR-10044,Pothole / Road Damage,Resolved,Medium,Waterkloof,2026-07-30,2026-08-03,4.1
+SR-10045,Pothole / Road Damage,In Progress,Medium,Mamelodi,2026-08-23,,
+SR-10046,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-05-29,2026-05-31,1.8
+SR-10047,Street Light,Submitted,Medium,Centurion,2026-05-08,,
+SR-10048,Traffic Light,Resolved,Medium,Sunnyside,2026-08-28,2026-08-29,1.5
+SR-10049,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-07-08,2026-07-09,1.1
+SR-10050,Pothole / Road Damage,Resolved,Low,Sunnyside,2026-05-17,2026-05-22,4.4
+SR-10051,Stormwater Drain,Submitted,Low,Pretoria CBD,2026-03-07,,
+SR-10052,Street Light,In Progress,Low,Pretoria CBD,2026-05-30,,
+SR-10053,Road Signage,Resolved,Low,Mamelodi,2026-07-13,2026-07-16,3.0
+SR-10054,Pothole / Road Damage,Assigned,Medium,Pretoria West,2026-03-14,,
+SR-10055,Street Light,Assigned,Medium,Sunnyside,2026-03-08,,
+SR-10056,Stormwater Drain,Resolved,Medium,Arcadia,2026-03-24,2026-03-25,0.7
+SR-10057,Pothole / Road Damage,Resolved,Medium,Mamelodi,2026-08-30,2026-09-03,4.1
+SR-10058,Pothole / Road Damage,Resolved,High,Pretoria CBD,2026-08-01,2026-08-02,0.7
+SR-10059,Traffic Light,Resolved,High,Hatfield,2026-07-14,2026-07-17,2.4
+SR-10060,Pothole / Road Damage,Submitted,Low,Sunnyside,2026-08-30,,
+SR-10061,Pothole / Road Damage,In Progress,High,Hatfield,2026-06-06,,
+SR-10062,Pothole / Road Damage,Resolved,Low,Hatfield,2026-05-06,2026-05-08,2.3
+SR-10063,Traffic Light,Assigned,Low,Arcadia,2026-05-06,,
+SR-10064,Pothole / Road Damage,Resolved,Medium,Sunnyside,2026-08-29,2026-08-29,0.7
+SR-10065,Pothole / Road Damage,In Progress,Low,Pretoria West,2026-07-28,,
+SR-10066,Street Light,Resolved,Critical,Centurion,2026-06-22,2026-06-26,4.2
+SR-10067,Street Light,Resolved,Medium,Pretoria CBD,2026-06-03,2026-06-04,1.0
+SR-10068,Pothole / Road Damage,Resolved,Medium,Hatfield,2026-06-28,2026-06-30,1.6
+SR-10069,Street Light,Resolved,Low,Hatfield,2026-03-19,2026-03-21,1.5
+SR-10070,Street Light,Resolved,Low,Pretoria West,2026-06-23,2026-06-27,3.3
+SR-10071,Traffic Light,Resolved,Low,Sunnyside,2026-03-06,2026-03-07,1.2
+SR-10072,Traffic Light,Resolved,Low,Sunnyside,2026-06-13,2026-06-16,3.0
+SR-10073,Pothole / Road Damage,Resolved,Low,Waterkloof,2026-05-30,2026-06-01,1.5
+SR-10074,Pothole / Road Damage,Resolved,Medium,Arcadia,2026-06-20,2026-06-24,3.9
+SR-10075,Pothole / Road Damage,Resolved,Low,Hatfield,2026-04-04,2026-04-08,3.7
+SR-10076,Pothole / Road Damage,Resolved,Medium,Centurion,2026-06-02,2026-06-05,2.9
+SR-10077,Stormwater Drain,Resolved,Low,Centurion,2026-04-23,2026-04-25,2.3
+SR-10078,Pothole / Road Damage,Resolved,Medium,Hatfield,2026-06-27,2026-06-30,3.0
+SR-10079,Traffic Light,Resolved,High,Brooklyn,2026-09-02,2026-09-04,2.2
+SR-10080,Pothole / Road Damage,Resolved,Medium,Waterkloof,2026-04-03,2026-04-04,0.7
+SR-10081,Street Light,Verified,High,Hatfield,2026-06-25,,
+SR-10082,Pothole / Road Damage,Resolved,Medium,Brooklyn,2026-03-07,2026-03-11,4.0
+SR-10083,Pothole / Road Damage,Resolved,High,Brooklyn,2026-04-11,2026-04-16,4.6
+SR-10084,Pothole / Road Damage,Resolved,Medium,Menlo Park,2026-05-02,2026-05-03,1.3
+SR-10085,Pothole / Road Damage,In Progress,Low,Sunnyside,2026-08-16,,
+SR-10086,Pothole / Road Damage,Resolved,Medium,Menlo Park,2026-09-14,2026-09-16,1.6
+SR-10087,Traffic Light,Resolved,Medium,Pretoria CBD,2026-07-12,2026-07-14,1.8
+SR-10088,Traffic Light,In Progress,Medium,Mamelodi,2026-08-26,,
+SR-10089,Street Light,Resolved,High,Arcadia,2026-09-15,2026-09-18,3.3
+SR-10090,Pothole / Road Damage,Submitted,Medium,Brooklyn,2026-07-12,,
+SR-10091,Traffic Light,Resolved,Medium,Arcadia,2026-03-29,2026-03-31,2.2
+SR-10092,Traffic Light,In Progress,High,Waterkloof,2026-04-19,,
+SR-10093,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-07-21,2026-07-24,3.2
+SR-10094,Pothole / Road Damage,Resolved,Low,Sunnyside,2026-08-17,2026-08-21,4.5
+SR-10095,Traffic Light,In Progress,Low,Arcadia,2026-09-11,,
+SR-10096,Stormwater Drain,Resolved,Medium,Menlo Park,2026-04-16,2026-04-17,1.2
+SR-10097,Traffic Light,In Progress,Low,Mamelodi,2026-04-09,,
+SR-10098,Stormwater Drain,Resolved,Medium,Hatfield,2026-07-14,2026-07-19,4.1
+SR-10099,Street Light,Resolved,Low,Mamelodi,2026-03-31,2026-04-01,1.1
+SR-10100,Street Light,Resolved,Medium,Pretoria CBD,2026-07-31,2026-08-01,1.0
+SR-10101,Traffic Light,Resolved,Medium,Brooklyn,2026-07-28,2026-07-31,2.4
+SR-10102,Traffic Light,Resolved,Medium,Arcadia,2026-06-14,2026-06-18,3.8
+SR-10103,Pothole / Road Damage,In Progress,Medium,Soshanguve,2026-08-04,,
+SR-10104,Street Light,Submitted,Low,Hatfield,2026-07-05,,
+SR-10105,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-08-21,2026-08-23,2.2
+SR-10106,Street Light,Resolved,High,Hatfield,2026-03-16,2026-03-19,2.6
+SR-10107,Street Light,Resolved,Low,Soshanguve,2026-05-04,2026-05-05,0.7
+SR-10108,Pothole / Road Damage,Resolved,Medium,Sunnyside,2026-03-28,2026-03-30,1.8
+SR-10109,Pothole / Road Damage,Resolved,Medium,Mamelodi,2026-04-03,2026-04-06,2.7
+SR-10110,Traffic Light,Resolved,Medium,Pretoria West,2026-05-07,2026-05-09,2.4
+SR-10111,Pothole / Road Damage,Resolved,Medium,Arcadia,2026-04-15,2026-04-20,4.3
+SR-10112,Street Light,Resolved,Critical,Arcadia,2026-03-31,2026-04-02,1.8
+SR-10113,Street Light,Resolved,High,Hatfield,2026-09-04,2026-09-07,3.4
+SR-10114,Pothole / Road Damage,Resolved,High,Arcadia,2026-07-18,2026-07-19,0.9
+SR-10115,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-06-14,2026-06-16,2.1
+SR-10116,Traffic Light,In Progress,Critical,Hatfield,2026-07-31,,
+SR-10117,Street Light,Resolved,Medium,Arcadia,2026-08-06,2026-08-10,4.3
+SR-10118,Pothole / Road Damage,Resolved,Critical,Pretoria CBD,2026-04-29,2026-04-30,1.4
+SR-10119,Stormwater Drain,Submitted,Medium,Mamelodi,2026-07-12,,
+SR-10120,Street Light,Resolved,Medium,Waterkloof,2026-06-08,2026-06-12,4.3
+SR-10121,Pothole / Road Damage,Resolved,Low,Menlo Park,2026-08-10,2026-08-13,2.6
+SR-10122,Pothole / Road Damage,Resolved,Low,Waterkloof,2026-09-03,2026-09-05,2.2
+SR-10123,Pothole / Road Damage,Verified,Medium,Pretoria CBD,2026-06-21,,
+SR-10124,Pothole / Road Damage,Resolved,Medium,Menlo Park,2026-04-29,2026-05-01,1.7
+SR-10125,Traffic Light,Resolved,Medium,Pretoria West,2026-06-21,2026-06-23,2.7
+SR-10126,Street Light,Resolved,Low,Pretoria CBD,2026-07-27,2026-07-29,1.3
+SR-10127,Street Light,In Progress,High,Sunnyside,2026-08-10,,
+SR-10128,Street Light,Resolved,Medium,Menlo Park,2026-05-23,2026-05-25,2.6
+SR-10129,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-04-16,2026-04-19,2.3
+SR-10130,Pothole / Road Damage,Assigned,Medium,Pretoria CBD,2026-03-05,,
+SR-10131,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-05-12,2026-05-16,3.4
+SR-10132,Street Light,Resolved,Low,Pretoria CBD,2026-08-27,2026-08-28,1.0
+SR-10133,Pothole / Road Damage,Resolved,Medium,Waterkloof,2026-06-05,2026-06-08,3.7
+SR-10134,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-05-31,2026-06-03,2.2
+SR-10135,Pothole / Road Damage,In Progress,Medium,Hatfield,2026-08-28,,
+SR-10136,Street Light,Assigned,Low,Sunnyside,2026-04-06,,
+SR-10137,Pothole / Road Damage,Assigned,Medium,Waterkloof,2026-04-26,,
+SR-10138,Pothole / Road Damage,Resolved,Medium,Sunnyside,2026-09-02,2026-09-03,1.1
+SR-10139,Street Light,Assigned,Medium,Menlo Park,2026-08-09,,
+SR-10140,Street Light,Submitted,Medium,Brooklyn,2026-03-19,,
+SR-10141,Pothole / Road Damage,Resolved,High,Hatfield,2026-07-30,2026-08-01,2.3
+SR-10142,Stormwater Drain,Assigned,Medium,Pretoria CBD,2026-07-13,,
+SR-10143,Pothole / Road Damage,Assigned,Medium,Mamelodi,2026-08-03,,
+SR-10144,Pothole / Road Damage,Resolved,High,Waterkloof,2026-06-25,2026-06-29,3.9
+SR-10145,Pothole / Road Damage,Resolved,High,Pretoria CBD,2026-08-26,2026-08-28,2.1
+SR-10146,Traffic Light,Resolved,High,Soshanguve,2026-05-19,2026-05-22,2.9
+SR-10147,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-05-10,2026-05-13,3.2
+SR-10148,Street Light,Resolved,Low,Pretoria CBD,2026-06-11,2026-06-14,2.4
+SR-10149,Traffic Light,Verified,Medium,Menlo Park,2026-09-12,,
+SR-10150,Street Light,Resolved,Medium,Arcadia,2026-08-28,2026-08-31,2.9
+SR-10151,Street Light,In Progress,Medium,Mamelodi,2026-07-04,,
+SR-10152,Road Signage,Resolved,Low,Pretoria CBD,2026-08-15,2026-08-17,2.1
+SR-10153,Pothole / Road Damage,Resolved,Medium,Mamelodi,2026-03-06,2026-03-11,4.4
+SR-10154,Pothole / Road Damage,Submitted,Medium,Centurion,2026-09-06,,
+SR-10155,Stormwater Drain,In Progress,Low,Pretoria CBD,2026-03-15,,
+SR-10156,Road Signage,Verified,Medium,Menlo Park,2026-06-08,,
+SR-10157,Street Light,In Progress,Medium,Menlo Park,2026-07-17,,
+SR-10158,Traffic Light,In Progress,High,Pretoria CBD,2026-03-26,,
+SR-10159,Traffic Light,Resolved,Low,Brooklyn,2026-05-12,2026-05-14,1.9
+SR-10160,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-05-18,2026-05-20,2.1
+SR-10161,Street Light,Submitted,Medium,Hatfield,2026-06-11,,
+SR-10162,Pothole / Road Damage,Resolved,Low,Hatfield,2026-07-20,2026-07-24,3.5
+SR-10163,Pothole / Road Damage,Submitted,Medium,Pretoria CBD,2026-05-08,,
+SR-10164,Street Light,Assigned,High,Mamelodi,2026-09-16,,
+SR-10165,Pothole / Road Damage,In Progress,Medium,Brooklyn,2026-03-21,,
+SR-10166,Street Light,Resolved,Low,Waterkloof,2026-07-18,2026-07-22,4.4
+SR-10167,Pothole / Road Damage,Resolved,Low,Mamelodi,2026-06-03,2026-06-04,1.1
+SR-10168,Traffic Light,Resolved,Medium,Pretoria CBD,2026-03-04,2026-03-07,3.6
+SR-10169,Pothole / Road Damage,Assigned,Critical,Sunnyside,2026-03-26,,
+SR-10170,Pothole / Road Damage,Resolved,Medium,Sunnyside,2026-03-25,2026-03-26,1.5
+SR-10171,Stormwater Drain,Resolved,Medium,Centurion,2026-09-12,2026-09-13,1.6
+SR-10172,Pothole / Road Damage,Resolved,Low,Menlo Park,2026-04-19,2026-04-21,2.3
+SR-10173,Traffic Light,Resolved,Low,Pretoria CBD,2026-06-18,2026-06-21,3.1
+SR-10174,Street Light,In Progress,Low,Mamelodi,2026-06-04,,
+SR-10175,Traffic Light,Resolved,Medium,Hatfield,2026-09-05,2026-09-08,3.4
+SR-10176,Pothole / Road Damage,Assigned,Medium,Pretoria CBD,2026-07-11,,
+SR-10177,Street Light,Resolved,Medium,Sunnyside,2026-05-05,2026-05-07,2.4
+SR-10178,Pothole / Road Damage,Resolved,Medium,Menlo Park,2026-07-24,2026-07-26,1.9
+SR-10179,Street Light,Resolved,Critical,Menlo Park,2026-09-16,2026-09-19,2.9
+SR-10180,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-06-10,2026-06-11,1.8
+SR-10181,Road Signage,Verified,Low,Brooklyn,2026-04-15,,
+SR-10182,Traffic Light,Submitted,Low,Brooklyn,2026-07-22,,
+SR-10183,Street Light,Resolved,High,Centurion,2026-05-18,2026-05-22,3.8
+SR-10184,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-09-13,2026-09-17,3.6
+SR-10185,Traffic Light,Assigned,Medium,Pretoria CBD,2026-03-11,,
+SR-10186,Street Light,Submitted,High,Hatfield,2026-08-20,,
+SR-10187,Stormwater Drain,Resolved,Low,Hatfield,2026-08-12,2026-08-15,3.5
+SR-10188,Pothole / Road Damage,Resolved,Medium,Pretoria West,2026-04-11,2026-04-14,3.3
+SR-10189,Traffic Light,Resolved,Low,Sunnyside,2026-07-13,2026-07-15,1.5
+SR-10190,Pothole / Road Damage,In Progress,Medium,Pretoria West,2026-05-14,,
+SR-10191,Street Light,In Progress,Low,Pretoria CBD,2026-06-19,,
+SR-10192,Traffic Light,In Progress,Low,Pretoria CBD,2026-05-28,,
+SR-10193,Street Light,In Progress,Medium,Pretoria CBD,2026-06-12,,
+SR-10194,Traffic Light,Resolved,Low,Soshanguve,2026-07-14,2026-07-17,3.0
+SR-10195,Stormwater Drain,In Progress,Medium,Sunnyside,2026-07-03,,
+SR-10196,Street Light,Assigned,Low,Soshanguve,2026-09-11,,
+SR-10197,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-07-05,2026-07-07,1.5
+SR-10198,Street Light,In Progress,Low,Pretoria West,2026-07-29,,
+SR-10199,Traffic Light,Verified,Low,Soshanguve,2026-07-21,,
+SR-10200,Traffic Light,Assigned,Low,Brooklyn,2026-09-11,,
+SR-10201,Pothole / Road Damage,Resolved,Medium,Centurion,2026-05-24,2026-05-28,4.4
+SR-10202,Pothole / Road Damage,Assigned,Medium,Hatfield,2026-07-18,,
+SR-10203,Road Signage,Resolved,Medium,Waterkloof,2026-06-02,2026-06-04,2.3
+SR-10204,Traffic Light,Resolved,Medium,Pretoria West,2026-05-08,2026-05-10,2.0
+SR-10205,Road Signage,Resolved,Medium,Hatfield,2026-05-04,2026-05-05,1.4
+SR-10206,Pothole / Road Damage,Resolved,High,Arcadia,2026-08-11,2026-08-15,3.7
+SR-10207,Pothole / Road Damage,Resolved,Low,Hatfield,2026-04-18,2026-04-19,0.6
+SR-10208,Stormwater Drain,Assigned,Low,Sunnyside,2026-03-23,,
+SR-10209,Pothole / Road Damage,Resolved,Critical,Menlo Park,2026-04-11,2026-04-16,4.4
+SR-10210,Traffic Light,Resolved,High,Centurion,2026-09-16,2026-09-20,4.5
+SR-10211,Pothole / Road Damage,Resolved,Medium,Mamelodi,2026-03-05,2026-03-06,1.3
+SR-10212,Street Light,Resolved,Medium,Pretoria CBD,2026-07-27,2026-07-30,2.8
+SR-10213,Traffic Light,Resolved,High,Hatfield,2026-04-25,2026-04-27,2.5
+SR-10214,Pothole / Road Damage,Resolved,Low,Pretoria West,2026-03-10,2026-03-10,0.7
+SR-10215,Street Light,Resolved,Medium,Centurion,2026-05-04,2026-05-06,2.3
+SR-10216,Pothole / Road Damage,Resolved,Low,Pretoria West,2026-03-06,2026-03-07,0.9
+SR-10217,Street Light,Submitted,High,Arcadia,2026-06-28,,
+SR-10218,Pothole / Road Damage,Resolved,High,Pretoria CBD,2026-08-22,2026-08-25,3.4
+SR-10219,Pothole / Road Damage,Assigned,Critical,Pretoria CBD,2026-04-19,,
+SR-10220,Street Light,Assigned,Medium,Pretoria West,2026-09-03,,
+SR-10221,Street Light,Resolved,Medium,Menlo Park,2026-05-28,2026-05-30,1.9
+SR-10222,Pothole / Road Damage,Resolved,Low,Sunnyside,2026-03-06,2026-03-09,2.6
+SR-10223,Stormwater Drain,Verified,Medium,Hatfield,2026-04-14,,
+SR-10224,Traffic Light,Resolved,Medium,Sunnyside,2026-09-10,2026-09-13,3.3
+SR-10225,Stormwater Drain,Resolved,Low,Brooklyn,2026-06-20,2026-06-21,1.1
+SR-10226,Traffic Light,Assigned,Low,Pretoria CBD,2026-07-30,,
+SR-10227,Street Light,Resolved,Low,Pretoria CBD,2026-07-08,2026-07-09,0.7
+SR-10228,Road Signage,Resolved,Medium,Menlo Park,2026-08-30,2026-09-03,3.8
+SR-10229,Pothole / Road Damage,In Progress,High,Mamelodi,2026-03-03,,
+SR-10230,Pothole / Road Damage,Resolved,High,Hatfield,2026-03-01,2026-03-05,3.5
+SR-10231,Pothole / Road Damage,Resolved,Medium,Hatfield,2026-04-17,2026-04-19,2.1
+SR-10232,Street Light,Resolved,Medium,Brooklyn,2026-06-14,2026-06-15,1.4
+SR-10233,Pothole / Road Damage,Resolved,Medium,Arcadia,2026-06-28,2026-06-29,0.9
+SR-10234,Street Light,Resolved,Medium,Arcadia,2026-08-29,2026-08-31,2.3
+SR-10235,Pothole / Road Damage,Verified,High,Menlo Park,2026-09-15,,
+SR-10236,Pothole / Road Damage,In Progress,Critical,Arcadia,2026-03-13,,
+SR-10237,Street Light,Resolved,Medium,Sunnyside,2026-03-15,2026-03-16,1.6
+SR-10238,Stormwater Drain,Resolved,Medium,Hatfield,2026-09-13,2026-09-16,3.0
+SR-10239,Pothole / Road Damage,In Progress,Low,Pretoria CBD,2026-07-08,,
+SR-10240,Street Light,In Progress,Medium,Hatfield,2026-05-19,,
+SR-10241,Traffic Light,Resolved,Low,Arcadia,2026-07-22,2026-07-26,4.2
+SR-10242,Road Signage,Resolved,Medium,Arcadia,2026-07-11,2026-07-12,0.8
+SR-10243,Pothole / Road Damage,Assigned,Medium,Hatfield,2026-03-27,,
+SR-10244,Pothole / Road Damage,In Progress,Medium,Menlo Park,2026-07-27,,
+SR-10245,Street Light,Assigned,High,Hatfield,2026-05-02,,
+SR-10246,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-09-05,2026-09-07,2.0
+SR-10247,Pothole / Road Damage,In Progress,Medium,Sunnyside,2026-04-20,,
+SR-10248,Stormwater Drain,Resolved,Medium,Arcadia,2026-03-13,2026-03-14,1.0
+SR-10249,Pothole / Road Damage,Resolved,Medium,Centurion,2026-07-14,2026-07-14,0.8
+SR-10250,Street Light,Resolved,Medium,Pretoria CBD,2026-06-08,2026-06-09,1.0
+SR-10251,Pothole / Road Damage,Assigned,High,Pretoria CBD,2026-06-30,,
+SR-10252,Pothole / Road Damage,Resolved,High,Arcadia,2026-09-13,2026-09-18,4.3
+SR-10253,Road Signage,In Progress,High,Pretoria CBD,2026-08-13,,
+SR-10254,Pothole / Road Damage,Resolved,Low,Mamelodi,2026-05-26,2026-05-28,1.9
+SR-10255,Pothole / Road Damage,In Progress,Low,Pretoria CBD,2026-09-10,,
+SR-10256,Pothole / Road Damage,In Progress,Medium,Soshanguve,2026-08-20,,
+SR-10257,Traffic Light,Resolved,Low,Hatfield,2026-07-19,2026-07-20,1.0
+SR-10258,Pothole / Road Damage,Resolved,Medium,Menlo Park,2026-04-08,2026-04-11,3.8
+SR-10259,Pothole / Road Damage,Assigned,Low,Arcadia,2026-05-12,,
+SR-10260,Traffic Light,Assigned,High,Brooklyn,2026-06-28,,
+SR-10261,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-04-07,2026-04-08,0.9
+SR-10262,Stormwater Drain,In Progress,Medium,Menlo Park,2026-05-05,,
+SR-10263,Street Light,Resolved,Low,Hatfield,2026-09-11,2026-09-14,2.6
+SR-10264,Street Light,Assigned,High,Arcadia,2026-04-19,,
+SR-10265,Traffic Light,Submitted,Medium,Sunnyside,2026-05-02,,
+SR-10266,Pothole / Road Damage,Resolved,Medium,Soshanguve,2026-03-01,2026-03-03,1.7
+SR-10267,Stormwater Drain,Resolved,High,Sunnyside,2026-08-11,2026-08-14,2.6
+SR-10268,Pothole / Road Damage,Submitted,Low,Hatfield,2026-09-05,,
+SR-10269,Traffic Light,Resolved,Medium,Menlo Park,2026-08-16,2026-08-18,1.4
+SR-10270,Street Light,Assigned,Medium,Sunnyside,2026-05-04,,
+SR-10271,Pothole / Road Damage,Resolved,Medium,Hatfield,2026-03-08,2026-03-12,3.8
+SR-10272,Street Light,Assigned,Medium,Arcadia,2026-03-18,,
+SR-10273,Traffic Light,Submitted,Medium,Pretoria CBD,2026-05-09,,
+SR-10274,Street Light,Resolved,Low,Pretoria CBD,2026-07-30,2026-07-31,0.9
+SR-10275,Pothole / Road Damage,Resolved,Medium,Brooklyn,2026-07-30,2026-08-03,4.0
+SR-10276,Pothole / Road Damage,Resolved,Medium,Arcadia,2026-06-13,2026-06-17,3.8
+SR-10277,Traffic Light,Submitted,Low,Pretoria CBD,2026-08-02,,
+SR-10278,Road Signage,Resolved,Medium,Soshanguve,2026-06-11,2026-06-13,1.2
+SR-10279,Stormwater Drain,Resolved,Low,Pretoria CBD,2026-05-30,2026-06-02,3.6
+SR-10280,Street Light,Submitted,Medium,Mamelodi,2026-08-21,,
+SR-10281,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-06-24,2026-06-28,4.3
+SR-10282,Pothole / Road Damage,Resolved,Medium,Pretoria West,2026-04-25,2026-04-30,4.5
+SR-10283,Traffic Light,Verified,Low,Brooklyn,2026-06-30,,
+SR-10284,Street Light,Submitted,Medium,Pretoria CBD,2026-05-23,,
+SR-10285,Street Light,Resolved,High,Mamelodi,2026-03-07,2026-03-08,1.6
+SR-10286,Street Light,Resolved,Medium,Hatfield,2026-08-12,2026-08-14,1.8
+SR-10287,Stormwater Drain,In Progress,Medium,Centurion,2026-08-02,,
+SR-10288,Pothole / Road Damage,Resolved,Medium,Menlo Park,2026-08-27,2026-08-31,4.0
+SR-10289,Road Signage,Resolved,High,Menlo Park,2026-03-07,2026-03-10,2.8
+SR-10290,Traffic Light,Resolved,High,Waterkloof,2026-09-12,2026-09-16,4.0
+SR-10291,Traffic Light,Resolved,Low,Menlo Park,2026-08-29,2026-09-02,4.2
+SR-10292,Traffic Light,Resolved,Low,Pretoria CBD,2026-04-23,2026-04-25,2.1
+SR-10293,Street Light,Resolved,High,Hatfield,2026-03-06,2026-03-07,0.6
+SR-10294,Pothole / Road Damage,Resolved,High,Pretoria CBD,2026-03-31,2026-04-04,3.9
+SR-10295,Stormwater Drain,Assigned,Medium,Soshanguve,2026-05-01,,
+SR-10296,Street Light,Resolved,Medium,Waterkloof,2026-08-14,2026-08-15,1.2
+SR-10297,Pothole / Road Damage,Verified,Low,Waterkloof,2026-08-21,,
+SR-10298,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-03-19,2026-03-20,1.4
+SR-10299,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-03-05,2026-03-09,3.1
+SR-10300,Street Light,Submitted,Low,Pretoria CBD,2026-07-18,,
+SR-10301,Street Light,Resolved,Low,Pretoria CBD,2026-08-05,2026-08-09,4.4
+SR-10302,Street Light,Resolved,Medium,Brooklyn,2026-04-23,2026-04-27,4.0
+SR-10303,Pothole / Road Damage,Resolved,Medium,Brooklyn,2026-03-07,2026-03-10,3.1
+SR-10304,Street Light,Assigned,Medium,Sunnyside,2026-03-31,,
+SR-10305,Stormwater Drain,Assigned,Medium,Menlo Park,2026-08-17,,
+SR-10306,Pothole / Road Damage,In Progress,Critical,Waterkloof,2026-06-22,,
+SR-10307,Traffic Light,Resolved,Low,Menlo Park,2026-04-23,2026-04-26,3.1
+SR-10308,Pothole / Road Damage,Resolved,Medium,Hatfield,2026-06-20,2026-06-21,0.6
+SR-10309,Pothole / Road Damage,In Progress,Medium,Centurion,2026-03-30,,
+SR-10310,Stormwater Drain,Resolved,Medium,Pretoria CBD,2026-04-11,2026-04-12,0.7
+SR-10311,Pothole / Road Damage,Resolved,Medium,Mamelodi,2026-07-13,2026-07-16,3.0
+SR-10312,Street Light,Resolved,Low,Arcadia,2026-04-28,2026-05-02,3.9
+SR-10313,Traffic Light,Assigned,Medium,Brooklyn,2026-05-22,,
+SR-10314,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-05-01,2026-05-02,1.4
+SR-10315,Street Light,In Progress,Medium,Menlo Park,2026-03-14,,
+SR-10316,Pothole / Road Damage,Resolved,Medium,Hatfield,2026-06-25,2026-06-27,2.1
+SR-10317,Street Light,Resolved,Low,Centurion,2026-03-26,2026-03-28,2.4
+SR-10318,Street Light,Assigned,Medium,Soshanguve,2026-04-12,,
+SR-10319,Street Light,Submitted,Low,Soshanguve,2026-05-05,,
+SR-10320,Traffic Light,Resolved,Medium,Pretoria CBD,2026-03-14,2026-03-16,2.4
+SR-10321,Traffic Light,Assigned,Medium,Arcadia,2026-03-29,,
+SR-10322,Pothole / Road Damage,In Progress,Medium,Hatfield,2026-08-08,,
+SR-10323,Pothole / Road Damage,Submitted,Medium,Hatfield,2026-09-16,,
+SR-10324,Traffic Light,In Progress,High,Pretoria CBD,2026-06-14,,
+SR-10325,Street Light,Resolved,Low,Centurion,2026-07-29,2026-07-30,0.6
+SR-10326,Street Light,Resolved,Medium,Hatfield,2026-03-03,2026-03-05,2.4
+SR-10327,Road Signage,In Progress,Low,Sunnyside,2026-03-31,,
+SR-10328,Stormwater Drain,Submitted,Low,Sunnyside,2026-07-14,,
+SR-10329,Traffic Light,Resolved,Critical,Centurion,2026-05-02,2026-05-06,3.9
+SR-10330,Street Light,Resolved,High,Hatfield,2026-08-04,2026-08-05,1.0
+SR-10331,Traffic Light,Resolved,Low,Arcadia,2026-09-05,2026-09-09,3.8
+SR-10332,Traffic Light,Submitted,Low,Sunnyside,2026-07-02,,
+SR-10333,Pothole / Road Damage,Resolved,Medium,Centurion,2026-04-06,2026-04-08,1.4
+SR-10334,Street Light,Submitted,Medium,Brooklyn,2026-06-09,,
+SR-10335,Street Light,Verified,Low,Brooklyn,2026-04-11,,
+SR-10336,Traffic Light,Assigned,Medium,Arcadia,2026-03-04,,
+SR-10337,Traffic Light,Submitted,Medium,Brooklyn,2026-08-30,,
+SR-10338,Street Light,Resolved,Low,Brooklyn,2026-03-23,2026-03-25,2.4
+SR-10339,Pothole / Road Damage,In Progress,Low,Centurion,2026-03-25,,
+SR-10340,Street Light,Verified,High,Sunnyside,2026-08-23,,
+SR-10341,Street Light,In Progress,Medium,Pretoria West,2026-08-15,,
+SR-10342,Pothole / Road Damage,Resolved,Medium,Centurion,2026-05-25,2026-05-27,2.5
+SR-10343,Street Light,Submitted,Medium,Arcadia,2026-04-21,,
+SR-10344,Pothole / Road Damage,Verified,Medium,Mamelodi,2026-03-16,,
+SR-10345,Road Signage,Resolved,Medium,Centurion,2026-06-22,2026-06-27,4.6
+SR-10346,Traffic Light,In Progress,Medium,Arcadia,2026-06-27,,
+SR-10347,Pothole / Road Damage,Resolved,Critical,Brooklyn,2026-08-17,2026-08-17,0.7
+SR-10348,Traffic Light,Resolved,Medium,Menlo Park,2026-06-13,2026-06-14,1.2
+SR-10349,Pothole / Road Damage,Submitted,Low,Hatfield,2026-04-18,,
+SR-10350,Stormwater Drain,In Progress,High,Mamelodi,2026-06-06,,
+SR-10351,Street Light,Resolved,Medium,Pretoria CBD,2026-09-03,2026-09-06,2.9
+SR-10352,Pothole / Road Damage,Submitted,Medium,Menlo Park,2026-05-23,,
+SR-10353,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-08-22,2026-08-24,1.2
+SR-10354,Stormwater Drain,Resolved,Medium,Menlo Park,2026-07-22,2026-07-22,0.8
+SR-10355,Street Light,Resolved,Low,Brooklyn,2026-05-18,2026-05-22,4.2
+SR-10356,Traffic Light,Resolved,Low,Pretoria CBD,2026-05-11,2026-05-14,2.9
+SR-10357,Street Light,Resolved,Medium,Mamelodi,2026-03-03,2026-03-06,3.0
+SR-10358,Street Light,Resolved,High,Sunnyside,2026-09-03,2026-09-04,1.6
+SR-10359,Pothole / Road Damage,Resolved,Medium,Arcadia,2026-03-07,2026-03-10,2.8
+SR-10360,Street Light,Resolved,Medium,Pretoria CBD,2026-06-26,2026-06-30,3.5
+SR-10361,Pothole / Road Damage,Resolved,Low,Mamelodi,2026-07-14,2026-07-17,3.0
+SR-10362,Traffic Light,In Progress,Medium,Pretoria CBD,2026-05-29,,
+SR-10363,Traffic Light,Resolved,Low,Sunnyside,2026-07-29,2026-08-01,3.0
+SR-10364,Pothole / Road Damage,In Progress,Medium,Pretoria CBD,2026-05-14,,
+SR-10365,Street Light,Resolved,Low,Pretoria West,2026-08-17,2026-08-18,0.8
+SR-10366,Pothole / Road Damage,Submitted,Critical,Centurion,2026-08-29,,
+SR-10367,Pothole / Road Damage,Resolved,Low,Pretoria CBD,2026-04-11,2026-04-13,1.5
+SR-10368,Pothole / Road Damage,Resolved,Medium,Sunnyside,2026-05-27,2026-05-29,2.0
+SR-10369,Street Light,Verified,Medium,Soshanguve,2026-05-29,,
+SR-10370,Traffic Light,Resolved,Medium,Pretoria CBD,2026-06-08,2026-06-12,4.3
+SR-10371,Pothole / Road Damage,Submitted,Low,Hatfield,2026-06-23,,
+SR-10372,Street Light,In Progress,Medium,Menlo Park,2026-08-06,,
+SR-10373,Traffic Light,Resolved,Medium,Hatfield,2026-06-18,2026-06-19,1.1
+SR-10374,Street Light,Resolved,Medium,Soshanguve,2026-05-05,2026-05-07,1.8
+SR-10375,Traffic Light,Submitted,Critical,Hatfield,2026-07-05,,
+SR-10376,Pothole / Road Damage,Resolved,High,Sunnyside,2026-03-17,2026-03-20,2.8
+SR-10377,Street Light,Resolved,Low,Brooklyn,2026-06-24,2026-06-27,2.8
+SR-10378,Street Light,In Progress,Low,Mamelodi,2026-04-23,,
+SR-10379,Road Signage,Verified,Medium,Sunnyside,2026-09-05,,
+SR-10380,Traffic Light,In Progress,Medium,Pretoria CBD,2026-06-21,,
+SR-10381,Street Light,Assigned,Medium,Arcadia,2026-05-12,,
+SR-10382,Stormwater Drain,Resolved,Medium,Sunnyside,2026-03-02,2026-03-04,1.5
+SR-10383,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-05-12,2026-05-16,3.5
+SR-10384,Pothole / Road Damage,In Progress,Medium,Mamelodi,2026-08-09,,
+SR-10385,Street Light,Assigned,Low,Sunnyside,2026-05-17,,
+SR-10386,Traffic Light,In Progress,Low,Sunnyside,2026-04-09,,
+SR-10387,Traffic Light,Resolved,Medium,Pretoria CBD,2026-06-01,2026-06-02,1.1
+SR-10388,Pothole / Road Damage,Resolved,Critical,Waterkloof,2026-04-13,2026-04-17,3.5
+SR-10389,Pothole / Road Damage,Resolved,Medium,Sunnyside,2026-08-21,2026-08-23,2.2
+SR-10390,Traffic Light,In Progress,Medium,Menlo Park,2026-05-23,,
+SR-10391,Street Light,Submitted,Low,Pretoria CBD,2026-03-27,,
+SR-10392,Pothole / Road Damage,Resolved,Medium,Pretoria CBD,2026-07-17,2026-07-20,3.2
+SR-10393,Stormwater Drain,Resolved,Medium,Mamelodi,2026-05-06,2026-05-09,3.2
+SR-10394,Street Light,Verified,Medium,Centurion,2026-05-01,,
+SR-10395,Street Light,Verified,Medium,Brooklyn,2026-08-25,,
+SR-10396,Stormwater Drain,Resolved,Low,Pretoria CBD,2026-08-10,2026-08-14,4.0
+SR-10397,Pothole / Road Damage,Assigned,Medium,Arcadia,2026-03-16,,
+SR-10398,Street Light,In Progress,Medium,Pretoria CBD,2026-05-06,,
+SR-10399,Traffic Light,Assigned,Medium,Centurion,2026-08-12,,
+SR-10400,Pothole / Road Damage,Resolved,Medium,Menlo Park,2026-08-31,2026-09-04,4.3
+SR-10401,Pothole / Road Damage,Resolved,Critical,Centurion,2026-08-24,2026-08-26,2.5
+SR-10402,Street Light,Resolved,Medium,Centurion,2026-05-16,2026-05-19,2.6
+SR-10403,Pothole / Road Damage,Verified,High,Pretoria CBD,2026-08-04,,
+SR-10404,Pothole / Road Damage,Verified,Low,Menlo Park,2026-07-05,,
+SR-10405,Pothole / Road Damage,Verified,Medium,Centurion,2026-07-22,,
+SR-10406,Pothole / Road Damage,Assigned,Low,Pretoria CBD,2026-03-31,,
+SR-10407,Pothole / Road Damage,Verified,Low,Arcadia,2026-07-02,,
+SR-10408,Street Light,Resolved,Low,Brooklyn,2026-07-05,2026-07-08,3.7
+SR-10409,Pothole / Road Damage,Resolved,Medium,Menlo Park,2026-03-25,2026-03-29,4.4
+SR-10410,Pothole / Road Damage,Submitted,Medium,Soshanguve,2026-08-06,,
+SR-10411,Stormwater Drain,Resolved,High,Centurion,2026-04-23,2026-04-27,3.9
+SR-10412,Pothole / Road Damage,Resolved,Medium,Arcadia,2026-05-04,2026-05-08,4.2
+SR-10413,Street Light,Resolved,Medium,Arcadia,2026-03-22,2026-03-26,4.3
+SR-10414,Traffic Light,Assigned,Medium,Centurion,2026-07-20,,
+SR-10415,Traffic Light,Resolved,High,Arcadia,2026-04-13,2026-04-14,1.0
+SR-10416,Pothole / Road Damage,Verified,Low,Mamelodi,2026-06-29,,
+SR-10417,Traffic Light,Resolved,Low,Pretoria CBD,2026-09-14,2026-09-15,1.4
+SR-10418,Pothole / Road Damage,Verified,Low,Sunnyside,2026-04-05,,
+SR-10419,Street Light,Resolved,Low,Arcadia,2026-03-30,2026-04-01,2.1
+SR-10420,Traffic Light,Resolved,High,Pretoria CBD,2026-07-05,2026-07-08,2.9
+SR-10421,Pothole / Road Damage,Resolved,High,Hatfield,2026-05-17,2026-05-20,3.2
+SR-10422,Pothole / Road Damage,Resolved,High,Hatfield,2026-05-19,2026-05-22,2.5
+SR-10423,Road Signage,Resolved,Medium,Pretoria CBD,2026-08-04,2026-08-05,1.0
+SR-10424,Pothole / Road Damage,Submitted,Medium,Hatfield,2026-05-24,,
+SR-10425,Street Light,Resolved,Medium,Pretoria West,2026-08-15,2026-08-19,4.3
+SR-10426,Traffic Light,Resolved,Low,Waterkloof,2026-08-09,2026-08-13,4.5
+SR-10427,Street Light,Resolved,Low,Menlo Park,2026-03-31,2026-04-01,1.1
+SR-10428,Street Light,Resolved,Medium,Brooklyn,2026-08-28,2026-08-31,2.6
