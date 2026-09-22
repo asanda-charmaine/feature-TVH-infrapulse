@@ -40,6 +40,7 @@ test('supervisor actions require their own session', () => {
 test('approval clears the queue and changed AI data resurfaces', () => {
   fixture([report({ severity: 'High' })]);
   store.loginSupervisor();
+  store.acceptSupervisorReport('INF-2026-00001');
   store.validateSupervisorReport('INF-2026-00001', { note: 'Confirmed' });
   const r = store.getState().reports[0];
   assert.equal(r.status, 'Verified');
@@ -51,6 +52,7 @@ test('correction preserves original AI result and updates linked work', () => {
   const r = report({ severity: 'High', workOrderId: 'WO-1' });
   fixture([r], [{ id: 'WO-1', reportId: r.id, category: r.category }]);
   store.loginSupervisor();
+  store.acceptSupervisorReport(r.id);
   store.validateSupervisorReport(r.id, { category: 'Street Light', severity: 'Low', address: 'Lamp 4, Main Road', note: 'Lamp issue' });
   const updated = store.getState();
   assert.equal(updated.reports[0].category, 'Street Light');
@@ -62,6 +64,7 @@ test('correction preserves original AI result and updates linked work', () => {
 test('assignment requires approval and uses existing work orders', () => {
   store.loginSupervisor();
   assert.throws(() => store.assignSupervisorTask('INF-2026-00001', 'T-04', '2026-09-22'), /Validate/);
+  store.acceptSupervisorReport('INF-2026-00001');
   store.validateSupervisorReport('INF-2026-00001', {});
   const wo = store.assignSupervisorTask('INF-2026-00001', 'T-04', '2026-09-22', { priority: 'High', time: '13:45', notes: 'Repair road edge' });
   assert.equal(wo.priority, 'High');
@@ -103,7 +106,7 @@ test('send-back, note-only resubmission, and acceptance preserve evidence and cl
   assert.equal(store.getState().workOrders[0].status, 'In Progress');
   assert.equal(store.getState().reports[0].status, 'In Progress');
   assert.equal(store.getState().assets[0].status, 'Under Maintenance');
-  assert.throws(() => store.resubmitSupervisorTask(w.id, 'Updated'), /Technician/);
+  assert.throws(() => store.resubmitSupervisorTask(w.id, 'Updated'), /not assigned/);
   store.loginTechnician();
   assert.throws(() => store.resubmitSupervisorTask(w.id, '  '), /completion note/);
   store.resubmitSupervisorTask(w.id, 'Filled remaining edge and compacted.');
@@ -117,8 +120,9 @@ test('send-back, note-only resubmission, and acceptance preserve evidence and cl
   assert.throws(() => store.reviewSupervisorCompletion(w.id, 'returned'), /no longer/);
 });
 test('initial completion requires a short note and cannot be repeated', () => {
+  store.loginTechnician();
   const r = report({ workOrderId: 'WO-1' });
-  fixture([r], [{ id: 'WO-1', reportId: r.id, assetId: 'RDS-1', category: r.category, status: 'Awaiting Verification', timeline: [], completion: { verification: { ok: true } } }]);
+  fixture([r], [{ id: 'WO-1', reportId: r.id, assetId: 'RDS-1', category: r.category, status: 'Awaiting Verification', technicianId: 'T-01', timeline: [], completion: { verification: { ok: true } } }]);
   assert.throws(() => store.completeWorkOrder('WO-1'), /completion note/);
   store.completeWorkOrder('WO-1', 'Repair completed.');
   assert.equal(store.getState().assets[0].previousFaults, 2);
@@ -128,9 +132,11 @@ test('initial completion requires a short note and cannot be repeated', () => {
 test('assignment preserves required evidence but accepts supervisor validation of conflicting AI', () => {
   store.loginSupervisor();
   fixture([report({ image: null })]);
+  store.acceptSupervisorReport('INF-2026-00001');
   store.validateSupervisorReport('INF-2026-00001', {});
   assert.throws(() => store.assignSupervisorTask('INF-2026-00001', 'T-01', '2026-09-22'), /Evidence required/);
   fixture([report({ ai: { confidence: 50, match: false } })]);
+  store.acceptSupervisorReport('INF-2026-00001');
   store.validateSupervisorReport('INF-2026-00001', {});
   assert.ok(store.assignSupervisorTask('INF-2026-00001', 'T-01', '2026-09-22'));
 });
@@ -142,14 +148,16 @@ test('citizen and automated reports share incoming, validated, assigned, progres
     let q = supervisorQueues(store.getState());
     assert.equal(q.incoming.length, 1);
     assert.equal(q.incoming[0].report.source, source);
+    store.acceptSupervisorReport('INF-2026-00001');
     store.validateSupervisorReport('INF-2026-00001', {});
     q = supervisorQueues(store.getState());
     assert.equal(q.incoming.length, 0);
     assert.equal(q.validated.length, 1);
-    const w = store.assignSupervisorTask('INF-2026-00001', 'T-02', '2026-09-23', { priority: 'Critical', time: '10:30' });
+    const w = store.assignSupervisorTask('INF-2026-00001', 'T-01', '2026-09-23', { priority: 'Critical', time: '10:30' });
     q = supervisorQueues(store.getState());
     assert.equal(q.validated.length, 0);
-    assert.equal(q.assigned[0].item.technicianId, 'T-02');
+    assert.equal(q.assigned[0].item.technicianId, 'T-01');
+    store.loginTechnician();
     store.startWork(w.id);
     q = supervisorQueues(store.getState());
     assert.equal(q.assigned.length, 0);
@@ -178,6 +186,7 @@ test('dismissed reports remain recorded but cannot be validated or assigned thro
 });
 test('invalid schedules and technicians are rejected without creating a work order', () => {
   store.loginSupervisor();
+  store.acceptSupervisorReport('INF-2026-00001');
   store.validateSupervisorReport('INF-2026-00001', {});
   for (const [technician, date, options] of [
     ['missing', '2026-09-22', {}],
@@ -191,6 +200,7 @@ test('invalid schedules and technicians are rejected without creating a work ord
 test('existing unassigned work order is reused and dismissal cannot cancel assigned work', () => {
   fixture([report({ workOrderId: 'WO-1' })], [{ id: 'WO-1', reportId: 'INF-2026-00001', status: 'Scheduled', timeline: [] }]);
   store.loginSupervisor();
+  store.acceptSupervisorReport('INF-2026-00001');
   store.validateSupervisorReport('INF-2026-00001', {});
   const w = store.assignSupervisorTask('INF-2026-00001', 'T-03', '2026-09-22', { time: '15:30', priority: 'High', notes: 'Inspect' });
   assert.equal(w.id, 'WO-1');
@@ -217,6 +227,7 @@ test('integration detections create operational reports and supervisor incoming 
     assert.ok(supervisorQueues(store.getState()).incoming.some((e) => e.report.id === r.id));
     assert.ok(JSON.parse(data.get('infrapulse.state.v1')).reports.some((report) => report.id === r.id));
     store.loginSupervisor();
+    store.acceptSupervisorReport(r.id);
     store.validateSupervisorReport(r.id, {});
     const w = store.assignSupervisorTask(r.id, 'T-01', '2026-09-22');
     assert.equal(w.reportId, r.id);
@@ -238,17 +249,14 @@ test('traffic telemetry fails only the green signal and updates the linked asset
   assert.equal(store.getState().assets.find((asset) => asset.id === a.assetId).status, 'Fault Reported');
   assert.ok(store.getState().assets[0].history.some((h) => h.ref === a.id));
 });
-test('repeated integration events have distinct report IDs and invalid event types leave state unchanged', () => {
-  store.connectDemoConnector('pothole');
+test('repeated integration events reject duplicate locations without changing state', () => {
   store.connectDemoConnector('traffic');
-  const a = store.simulateIntegrationEvent('pothole');
-  const b = store.simulateIntegrationEvent('pothole');
-  const c = store.simulateIntegrationEvent('traffic');
-  assert.notEqual(a.id, b.id);
-  assert.notEqual(b.integration.eventId, c.integration.eventId);
+  const r = store.simulateIntegrationEvent('traffic');
   const before = store.getState();
-  assert.throws(() => store.simulateIntegrationEvent('invalid'), /Unknown/);
+  assert.throws(() => store.simulateIntegrationEvent('traffic'), /already exists/);
   assert.equal(store.getState(), before);
+  assert.throws(() => store.simulateIntegrationEvent('invalid'), /Unknown/);
+  assert.ok(store.getState().reports.some((report) => report.id === r.id));
 });
 
 test('each connector gates only its own flow and connecting creates no reports', () => {
@@ -285,6 +293,7 @@ test('computer vision retains the selected image through report creation and ass
   assert.equal(r.imageName, 'uploaded-road.jpg');
   assert.equal(r.ai.confidence, 94);
   store.loginSupervisor();
+  store.acceptSupervisorReport(r.id);
   store.validateSupervisorReport(r.id, {});
   const w = store.assignSupervisorTask(r.id, 'T-01', '2026-09-22');
   assert.equal(w.image, image);
@@ -307,8 +316,88 @@ test('ending the demonstration disconnects both connectors and retains reports',
 test('reload starts disconnected while preserving existing reports', async () => {
   store.connectDemoConnector('pothole');
   const report = store.simulateIntegrationEvent('pothole');
+  const originalStorageEvent = storageEvent;
   const reloaded = await import('./store.js?reload-test');
+  storageEvent = originalStorageEvent;
   assert.deepEqual(reloaded.getState().connectors, {});
   assert.ok(reloaded.getState().reports.some((r) => r.id === report.id));
   assert.throws(() => reloaded.simulateIntegrationEvent('pothole'), /Connect/);
+});
+
+test('supervisor mock data fills every queue without overwriting or duplicating records', async () => {
+  const { addSupervisorDemoData } = await import('./supervisorDemo.js');
+  const initial = store.getState();
+  const populated = addSupervisorDemoData(initial);
+  const queues = supervisorQueues(populated);
+  for (const key of ['incoming', 'validated', 'assigned', 'active', 'completed']) assert.ok(queues[key].length, key);
+  assert.equal(populated.reports.find((r) => r.id === initial.reports[0].id), initial.reports[0]);
+  assert.equal(populated.reports.length, initial.reports.length + 8);
+  assert.equal(populated.workOrders.length, initial.workOrders.length + 4);
+  assert.equal(addSupervisorDemoData(populated), populated);
+  fixture(populated.reports, populated.workOrders);
+  store.loginSupervisor();
+  const ready = populated.reports.find((r) => r.id === 'DEMO-SUP-004');
+  const assigned = store.assignSupervisorTask(ready.id, 'T-01', '2026-09-23');
+  assert.equal(assigned.reportId, ready.id);
+});
+
+test('review acceptance and data validation are separate queues', () => {
+  store.loginSupervisor();
+  const id = store.getState().reports[0].id;
+  assert.throws(() => store.validateSupervisorReport(id, {}), /Accept/);
+  store.acceptSupervisorReport(id, 'Relevant infrastructure issue');
+  assert.equal(supervisorQueues(store.getState()).incoming.length, 0);
+  assert.equal(supervisorQueues(store.getState()).validation.length, 1);
+  assert.throws(() => store.assignSupervisorTask(id, 'T-01', '2026-09-23'), /Validate/);
+  store.validateSupervisorReport(id, {});
+  assert.equal(supervisorQueues(store.getState()).validation.length, 0);
+  assert.equal(supervisorQueues(store.getState()).validated.length, 1);
+});
+test('technicians see and can update only their assigned work', () => {
+  const r = report();
+  fixture([r, report({ id: 'OTHER' })], [
+    { id: 'MINE', reportId: r.id, technicianId: 'T-01', status: 'Scheduled', image: r.image, timeline: [] },
+    { id: 'OTHER-WO', reportId: 'OTHER', technicianId: 'T-02', status: 'Scheduled', image: r.image, timeline: [] },
+  ]);
+  store.loginTechnician();
+  const scoped = store.technicianState(store.getState());
+  assert.deepEqual(scoped.workOrders.map((w) => w.id), ['MINE']);
+  assert.deepEqual(scoped.reports.map((r) => r.id), [r.id]);
+  assert.throws(() => store.startWork('OTHER-WO'), /not assigned/);
+  assert.throws(() => store.createWorkOrder({ reportId: r.id }), /Supervisor/);
+  store.startWork('MINE');
+  assert.equal(store.getState().workOrders[0].status, 'In Progress');
+});
+test('duplicate location rejects same open issue but permits distinct categories and resolved issues', () => {
+  const r = report();
+  assert.throws(() => store.submitCitizenReport({ ...r, email: '', cellphone: '0821234567' }), /already exists.*INF-2026-00001/);
+  const created = store.submitCitizenReport({ ...r, category: 'Street Light', cellphone: '0821234567', imageRotation: 90 });
+  assert.equal(created.cellphone, '0821234567');
+  assert.equal(created.imageRotation, 90);
+  assert.equal(created.submittedFromDevice, true);
+  fixture([report({ status: 'Resolved' })]);
+  assert.ok(store.submitCitizenReport({ ...r, cellphone: '' }));
+});
+test('repeated evidence is rejected without altering the report', () => {
+  const r = report();
+  assert.throws(() => store.attachEvidence(r.id, { image: r.image, imageName: 'renamed.jpg', ai: r.ai }), /already been uploaded/);
+  store.attachEvidence(r.id, { image: 'scene:pothole:2', imageName: 'new.jpg', ai: r.ai });
+  assert.throws(() => store.attachEvidence(r.id, { image: r.image, ai: r.ai }), /already been uploaded/);
+  fixture([r], [{ id: 'WO-1', reportId: r.id, technicianId: 'T-01', image: r.image, timeline: [], status: 'In Progress' }]);
+  store.loginTechnician();
+  assert.throws(() => store.beginRepairVerification('WO-1', { afterImage: r.image }), /already been uploaded/);
+  store.beginRepairVerification('WO-1', { afterImage: 'scene:pothole-fixed:1', notes: 'Fixed' });
+  assert.throws(() => store.beginRepairVerification('WO-1', { afterImage: 'scene:pothole-fixed:1' }), /already been uploaded/);
+});
+
+test('citizen history excludes seeded and other-device reports but keeps genuine submissions', () => {
+  assert.equal(store.isOwnCitizenReport(report({ id: 'INF-2026-00419', mine: true })), false);
+  assert.equal(store.isOwnCitizenReport(report({ id: 'INF-2026-00422', mine: true })), true);
+  assert.equal(store.isOwnCitizenReport(report({ mine: true, submittedFromDevice: true })), true);
+  assert.equal(store.isOwnCitizenReport(report({ mine: false })), false);
+});
+test('cellphone validation rejects invalid reference numbers without saving a report', () => {
+  fixture([]);
+  assert.throws(() => store.submitCitizenReport({ ...report(), cellphone: 'invalid' }), /cellphone/);
+  assert.equal(store.getState().reports.length, 0);
 });

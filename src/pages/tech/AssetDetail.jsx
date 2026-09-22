@@ -4,14 +4,14 @@ import AssetForm from '../../components/AssetForm.jsx';
 import MapView from '../../components/MapView.jsx';
 import { PageHead, RiskChip } from '../../components/tech.jsx';
 import { ConditionBadge, Empty, KV, Modal, SeverityBadge, StatusBadge, toast } from '../../components/ui.jsx';
-import { assetLinks, deleteAsset, useStore } from '../../lib/store.js';
+import { assetLinks, deleteAsset, useTechnicianStore } from '../../lib/store.js';
 import { fmtCoords } from '../../lib/geo.js';
 import { fmtDateTime, fmtShortDate, fmtAge as age } from '../../lib/format.js';
 import { currentRisk } from '../../lib/stats.js';
 
 export default function AssetDetail() {
   const { id } = useParams();
-  const state = useStore();
+  const state = useTechnicianStore();
   const navigate = useNavigate();
   const [edit, setEdit] = useState(false);
   const [confirm, setConfirm] = useState(false);

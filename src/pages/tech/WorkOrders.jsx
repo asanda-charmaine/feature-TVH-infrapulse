@@ -2,17 +2,16 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHead } from '../../components/tech.jsx';
 import { Empty, ExportMenu, SeverityBadge, StatusBadge, Icon } from '../../components/ui.jsx';
-import { useStore } from '../../lib/store.js';
-import { WORK_ORDER_STATUSES, TECHNICIANS } from '../../lib/constants.js';
+import { useTechnicianStore } from '../../lib/store.js';
+import { WORK_ORDER_STATUSES } from '../../lib/constants.js';
 import { toDateInput } from '../../lib/format.js';
 
 export default function WorkOrders() {
-  const { workOrders, assets } = useStore();
+  const { workOrders, assets } = useTechnicianStore();
   const navigate = useNavigate();
   const [q, setQ] = useState('');
   const [status, setStatus] = useState('All');
-  const [technicianId, setTechnicianId] = useState('');
-  const technicianOrders = useMemo(() => workOrders.filter((w) => !technicianId || w.technicianId === technicianId), [workOrders, technicianId]);
+  const technicianOrders = workOrders;
   const today = toDateInput();
 
   const counts = useMemo(() => Object.fromEntries(WORK_ORDER_STATUSES.map((s) => [s, technicianOrders.filter((w) => w.status === s).length])), [technicianOrders]);
@@ -37,7 +36,6 @@ export default function WorkOrders() {
       </PageHead>
 
       <div className="toolbar">
-        <select className="select" aria-label="Filter by technician" value={technicianId} onChange={(e) => setTechnicianId(e.target.value)}><option value="">All technicians</option>{TECHNICIANS.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}</select>
         <div className="search">
           <span className="search-ico"><Icon name="search" size={16} /></span>
           <input className="input" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search work order, report, asset, technician or location" aria-label="Search work orders" />
@@ -52,7 +50,7 @@ export default function WorkOrders() {
 
       <div className="card flush">
         {rows.length === 0 ? (
-          <Empty icon="workorders" title="No work orders found">Create a work order from a report to get started.</Empty>
+          <Empty icon="workorders" title="No work orders found">Tasks assigned by your supervisor will appear here.</Empty>
         ) : (
           <div className="table-wrap">
             <table className="table">

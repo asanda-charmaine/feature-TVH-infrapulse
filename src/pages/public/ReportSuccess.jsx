@@ -33,6 +33,7 @@ export default function ReportSuccess() {
           <KV
             items={[
               ['Category', report.category],
+              ['Cellphone', report.cellphone || 'Not provided'],
               ['Location', report.location.address],
               ['Status', <StatusBadge key="s" status={report.status} />],
             ]}

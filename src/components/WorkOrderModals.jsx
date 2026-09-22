@@ -52,9 +52,11 @@ export function EvidenceRequiredModal({ report, onClose, onAttached }) {
           className="btn btn-primary"
           disabled={!ok}
           onClick={() => {
+            try {
             attachEvidence(report.id, { image, imageName: name, ai: { detected: result.detected, match: true, confidence: result.confidence, severity: result.severity } });
             toast('Evidence attached to report');
             onAttached?.();
+            } catch (error) { toast(error.message, 'error'); }
           }}
         >
           Attach Evidence

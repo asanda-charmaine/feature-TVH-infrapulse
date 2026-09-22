@@ -8,7 +8,7 @@ import { PRETORIA_CENTER, composeAddress, fmtCoords, geocodeManual, getCurrentPo
 import { submitCitizenReport } from '../../lib/store.js';
 import { sendEmail } from '../../lib/email.js';
 
-const STEPS = ['Category', 'Photo', 'Location', 'Email', 'Review'];
+const STEPS = ['Category', 'Photo', 'Location', 'Contact', 'Review'];
 const CAT_ICON = { pothole: 'road', traffic: 'traffic', street: 'lamp' };
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -22,6 +22,10 @@ export default function LogReport() {
   const [loc, setLoc] = useState({ street: '', area: '', landmark: '', lat: null, lng: null, note: '' });
   const [locBusy, setLocBusy] = useState('');
   const [email, setEmail] = useState('');
+  const [cellphone, setCellphone] = useState('');
+  const [imageRotation, setImageRotation] = useState(0);
+  const [formError, setFormError] = useState('');
+  const usedImages = useRef(new Set());
   const [submitting, setSubmitting] = useState(false);
   const demoIdx = useRef(0);
 
@@ -40,6 +44,7 @@ export default function LogReport() {
   const failed = verification && !verification.pending && verification.match === false;
 
   const hasLocation = (loc.lat != null && loc.lng != null) || Boolean(loc.street.trim() || loc.area.trim() || loc.landmark.trim());
+  const phoneError = cellphone.trim() && !/^\+?\d{9,15}$/.test(cellphone.replace(/[\s()-]/g, '')) ? 'Enter a valid cellphone number, or leave it blank.' : '';
   const emailError = email.trim() && !EMAIL_RX.test(email.trim()) ? 'Please enter a valid email address, or leave it blank.' : '';
 
   const address = composeAddress(loc) || (loc.lat != null ? `Pinned location (${fmtCoords(loc.lat, loc.lng)})` : '');
@@ -72,12 +77,19 @@ export default function LogReport() {
   }
 
   function pickImage(data, name) {
+    if (data && usedImages.current.has(data)) { setFormError('This image has already been uploaded for this report.'); return; }
+    if (data) usedImages.current.add(data);
+    setFormError('');
+    setImageRotation(0);
     setImage(data);
     setImageName(name || '');
   }
 
   async function submit() {
+    if (submitting) return;
     setSubmitting(true);
+    setFormError('');
+    try {
     const report = submitCitizenReport({
       category: category.label,
       image,
@@ -85,11 +97,14 @@ export default function LogReport() {
       ai: { detected: verification.detected, match: true, confidence: verification.confidence, severity: verification.severity },
       location: { address, street: loc.street, area: loc.area, landmark: loc.landmark, lat: coords.lat, lng: coords.lng },
       email: email.trim(),
+      cellphone: cellphone.trim(),
+      imageRotation,
     });
     const emailResult = email.trim()
       ? await sendEmail({ type: 'confirmation', to: email.trim(), report: { id: report.id, category: report.category, location: report.location.address } })
       : null;
     navigate(`/report/submitted/${report.id}`, { state: { emailResult } });
+    } catch (err) { setFormError(err.message); } finally { setSubmitting(false); }
   }
 
   const marker = useMemo(
@@ -106,6 +121,7 @@ export default function LogReport() {
         <p>Tell us about the infrastructure problem. It only takes a minute.</p>
       </div>
       <Stepper steps={STEPS} current={step} />
+      {formError && <Alert kind="error" title={formError} />}
 
       {/* STEP 1: CATEGORY */}
       {step === 0 && (
@@ -137,12 +153,12 @@ export default function LogReport() {
             <p className="muted">Category: <strong>{category.label}</strong></p>
           </div>
 
-          {!image && <ImageInput onImage={pickImage} samples={SAMPLE_PHOTOS.citizen} />}
+          {!image && <ImageInput onImage={pickImage} samples={SAMPLE_PHOTOS.citizen.filter((sample) => sample.kind === category.id)} />}
 
           {image && (
             <div className="card">
               <div className="grid cols-2" style={{ alignItems: 'start' }}>
-                <Photo src={image} alt="Your uploaded photo" />
+                <Photo rotation={imageRotation} src={image} alt="Your uploaded photo" />
                 <div className="stack-sm">
                   <h3 style={{ margin: 0 }}>AI Image Verification</h3>
                   {verification?.pending && (
@@ -163,8 +179,8 @@ export default function LogReport() {
                       <p style={{ margin: '4px 0 0' }}>{verification.reason}</p>
                     </div>
                   )}
-                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => pickImage(null, '')}>
-                    <Icon name="upload" size={15} /> {failed ? 'Upload Another Image' : 'Change photo'}
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => failed ? pickImage(null, '') : setImageRotation((r) => (r + 90) % 360)}>
+                    <Icon name="upload" size={15} /> {failed ? 'Upload Another Image' : 'Retake Photo'}
                   </button>
                 </div>
               </div>
@@ -241,11 +257,14 @@ export default function LogReport() {
       {step === 3 && (
         <div className="stack">
           <div>
-            <h2>Email Address <span className="muted" style={{ fontWeight: 500 }}>(Optional)</span></h2>
+            <h2>Contact Details <span className="muted" style={{ fontWeight: 500 }}>(Optional)</span></h2>
             <p className="muted">Add your email if you would like to receive confirmation and updates about this report.</p>
           </div>
           <div className="card">
             <div className="field" style={{ marginBottom: 0 }}>
+              <label htmlFor="cellphone">Cellphone number (optional reference)</label>
+              <input id="cellphone" type="tel" className="input" autoComplete="tel" value={cellphone} onChange={(e) => setCellphone(e.target.value)} placeholder="e.g. 082 123 4567" />
+              {phoneError && <span className="error-text">{phoneError}</span>}
               <label htmlFor="email">Email address</label>
               <input id="email" type="email" className="input" value={email} placeholder="citizen@example.com" autoComplete="email" onChange={(e) => setEmail(e.target.value)} />
               {emailError && <span className="error-text">{emailError}</span>}
@@ -254,8 +273,8 @@ export default function LogReport() {
           </div>
           <div className="btn-row spread">
             <button className="btn btn-ghost" onClick={() => setStep(2)}>Back</button>
-            <button className="btn btn-primary btn-lg" disabled={Boolean(emailError)} onClick={() => setStep(4)}>
-              {email.trim() ? 'Continue' : 'Skip & Continue'}
+            <button className="btn btn-primary btn-lg" disabled={Boolean(emailError || phoneError)} onClick={() => setStep(4)}>
+              {email.trim() || cellphone.trim() ? 'Continue' : 'Skip & Continue'}
             </button>
           </div>
         </div>
@@ -278,7 +297,7 @@ export default function LogReport() {
               </div>
               <div>
                 <div className="label muted small" style={{ marginBottom: 6 }}>Image</div>
-                <Photo src={image} alt="Uploaded photograph" />
+                <Photo rotation={imageRotation} src={image} alt="Uploaded photograph" />
               </div>
             </div>
             <div className="divider" style={{ margin: 0 }} />
@@ -291,6 +310,7 @@ export default function LogReport() {
                 {coords.approximate ? ' (approximate)' : ''}
               </p>
             </div>
+            {cellphone.trim() && <p><strong>Cellphone:</strong> {cellphone.trim()}</p>}
             {email.trim() && (
               <>
                 <div className="divider" style={{ margin: 0 }} />

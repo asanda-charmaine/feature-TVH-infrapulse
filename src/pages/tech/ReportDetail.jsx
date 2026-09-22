@@ -3,15 +3,15 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import MapView from '../../components/MapView.jsx';
 import { PageHead, RiskChip } from '../../components/tech.jsx';
 import { Alert, KV, Photo, ReportTimeline, SeverityBadge, SourceBadge, StatusBadge, VerificationSummary, toast, Empty } from '../../components/ui.jsx';
-import { CreateWorkOrderModal, EvidenceRequiredModal } from '../../components/WorkOrderModals.jsx';
-import { hasEvidence, linkReportAsset, useStore, verifyReport } from '../../lib/store.js';
+import { EvidenceRequiredModal } from '../../components/WorkOrderModals.jsx';
+import { hasEvidence, linkReportAsset, useTechnicianStore } from '../../lib/store.js';
 import { categoryByLabel } from '../../lib/constants.js';
 import { fmtCoords, haversine } from '../../lib/geo.js';
 import { fmtDateTime } from '../../lib/format.js';
 
 export default function TechReportDetail() {
   const { id } = useParams();
-  const state = useStore();
+  const state = useTechnicianStore();
   const navigate = useNavigate();
   const [modal, setModal] = useState(null); // 'evidence' | 'workorder'
   const r = state.reports.find((x) => x.id === id);
@@ -29,7 +29,7 @@ export default function TechReportDetail() {
   const wo = state.workOrders.find((w) => w.id === r.workOrderId);
   const cat = categoryByLabel(r.category);
   const evidence = hasEvidence(r);
-  const eligible = !r.supervisorDismissal && !r.workOrderId && (r.status === 'Submitted' || r.status === 'Verified');
+  const eligible = false;
   const sameTypeAssets = state.assets
     .filter((a) => a.type === cat.assetType)
     .map((a) => ({ a, d: haversine(r.location.lat, r.location.lng, a.lat, a.lng) }))
@@ -45,12 +45,6 @@ export default function TechReportDetail() {
     <>
       <div className="small" style={{ marginBottom: 8 }}><Link to="/technician/reports">← Reports</Link></div>
       <PageHead title={r.id} sub={`${r.category} · ${r.location.address}`}>
-        {!r.supervisorDismissal && r.status === 'Submitted' && (
-          <button className="btn btn-secondary" onClick={() => { verifyReport(r.id); toast('Report verified'); }}>Verify Report</button>
-        )}
-        {eligible && (
-          <button className="btn btn-primary" onClick={() => setModal(evidence ? 'workorder' : 'evidence')}>Create Work Order</button>
-        )}
         {wo && <Link className="btn btn-navy" to={`/technician/work-orders/${wo.id}`}>Open Work Order {wo.id}</Link>}
       </PageHead>
 
@@ -67,7 +61,7 @@ export default function TechReportDetail() {
         <div className="stack">
           <div className="card">
             <div className="card-head"><h2>Original Image</h2><SourceBadge source={r.source} /></div>
-            <Photo src={r.image} alt="Original evidence" tag={r.image ? 'ORIGINAL' : undefined} empty="No image attached — evidence required" />
+            <Photo rotation={r.imageRotation} src={r.image} alt="Original evidence" tag={r.image ? 'ORIGINAL' : undefined} empty="No image attached — evidence required" />
             {r.description && <p style={{ marginTop: 12 }}><strong>Description:</strong> {r.description}</p>}
           </div>
 
@@ -93,6 +87,7 @@ export default function TechReportDetail() {
                 ['Report Reference', <span className="mono" key="1">{r.id}</span>],
                 ['Report Source', <SourceBadge key="2" source={r.source} />],
                 ['Category', r.category],
+                ['Cellphone', r.cellphone || 'Not provided'],
                 ['Severity', <SeverityBadge key="3" severity={r.severity} />],
                 ['Risk Score', <RiskChip key="4" risk={r.risk} />],
                 ['Date Submitted', fmtDateTime(r.submittedAt)],
@@ -105,7 +100,7 @@ export default function TechReportDetail() {
           <div className="card">
             <h2>Linked Asset</h2>
             {asset ? (
-              <KV items={[['Asset', <Link key="a" to={`/technician/assets/${asset.id}`} className="mono">{asset.id}</Link>], ['Name', asset.name], ['Condition', asset.condition], ['Status', asset.status]]} />
+              <KV items={[['Asset', <span key="a" className="mono">{asset.id}</span>], ['Name', asset.name], ['Condition', asset.condition], ['Status', asset.status]]} />
             ) : (
               <p className="muted">No asset linked yet.</p>
             )}
@@ -160,9 +155,9 @@ export default function TechReportDetail() {
       </div>
 
       {modal === 'evidence' && (
-        <EvidenceRequiredModal report={r} onClose={() => setModal(null)} onAttached={() => setModal('workorder')} />
+        <EvidenceRequiredModal report={r} onClose={() => setModal(null)} onAttached={() => setModal(null)} />
       )}
-      {modal === 'workorder' && <CreateWorkOrderModal report={r} onClose={() => setModal(null)} />}
+
     </>
   );
 }

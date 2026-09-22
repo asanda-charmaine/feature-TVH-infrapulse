@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Icon, LogoMark } from './ui.jsx';
-import { useStore, useTechnicianSession, logoutTechnician, useSupervisorSession, logoutSupervisor } from '../lib/store.js';
+import { useStore, useTechnicianStore, useTechnicianSession, logoutTechnician, useSupervisorSession, logoutSupervisor } from '../lib/store.js';
 import { DEMO_TECHNICIAN } from '../lib/constants.js';
 
 const NAV = [
   ['dashboard', 'Dashboard', 'dashboard'],
-  ['assets', 'Asset Registry', 'assets'],
   ['map', 'GIS Map', 'map'],
   ['reports', 'Reports', 'reports'],
   ['work-orders', 'Work Orders', 'workorders'],
-  ['analytics', 'Data & Analytics', 'analytics'],
   ['notifications', 'Notifications', 'bell'],
 ];
 
@@ -19,7 +17,9 @@ export default function TechLayout({ supervisor = false }) {
   const supervisorSession = useSupervisorSession();
   const loggedIn = supervisor ? supervisorSession : technicianSession;
   const base = supervisor ? '/supervisor' : '/technician';
-  const { notifications } = useStore();
+  const supervisorState = useStore();
+  const technicianState = useTechnicianStore();
+  const { notifications } = supervisor ? supervisorState : technicianState;
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ export default function TechLayout({ supervisor = false }) {
           InfraPulse
         </Link>
         <nav>
-          {(supervisor ? [['dashboard', 'Dashboard', 'dashboard'], ['review', 'Review Tasks', 'reports'], ['assign', 'Assign Tasks', 'user'], ['assigned', 'Assigned Tasks', 'workorders']] : NAV).map(([path, label, icon]) => (
+          {(supervisor ? [['dashboard', 'Dashboard', 'dashboard'], ['review', 'Review Tasks', 'reports'], ['validation', 'Data Validation', 'check'], ['assign', 'Assign Tasks', 'user'], ['assigned', 'Assigned Tasks', 'workorders']] : NAV).map(([path, label, icon]) => (
             <NavLink key={path} to={base + '/' + path} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
               <span className="nav-ico"><Icon name={icon} /></span>
               {label}
