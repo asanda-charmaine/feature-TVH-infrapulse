@@ -1,13 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { PageHead } from '../../components/tech.jsx';
 import { Empty, Icon } from '../../components/ui.jsx';
-import { markAllNotificationsRead, markNotificationRead, useStore } from '../../lib/store.js';
+import { markAllNotificationsRead, markNotificationRead, useTechnicianStore } from '../../lib/store.js';
 import { fmtDateTime } from '../../lib/format.js';
 
 const ICON = { critical: 'alert', report: 'reports', workorder: 'workorders', evidence: 'camera', vehicle: 'truck' };
 
 export default function Notifications() {
-  const { notifications } = useStore();
+  const { notifications } = useTechnicianStore();
   const navigate = useNavigate();
   const unread = notifications.filter((n) => !n.read).length;
 

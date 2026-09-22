@@ -81,11 +81,11 @@ export const SourceBadge = ({ source }) => (
 export const ConditionBadge = ({ value }) => <span className={`badge b-${cls(value)}`}>{value}</span>;
 
 // ---- Photo -------------------------------------------------------------------------------
-export function Photo({ src, alt = 'Photograph', className = '', tag, tagClass = '', empty = 'No image' }) {
+export function Photo({ src, alt = 'Photograph', className = '', tag, tagClass = '', empty = 'No image', rotation = 0 }) {
   const url = resolveImage(src);
   return (
     <div className={`photo ${className}`}>
-      {url ? <img src={url} alt={alt} loading="lazy" /> : <div className="photo-empty">{empty}</div>}
+      {url ? <img src={url} alt={alt} loading="lazy" style={rotation ? { transform: 'rotate(' + rotation + 'deg) scale(' + (rotation % 180 ? 0.7 : 1) + ')', objectFit: 'contain' } : undefined} /> : <div className="photo-empty">{empty}</div>}
       {tag && url && <span className={`tag ${tagClass}`}>{tag}</span>}
     </div>
   );
@@ -269,7 +269,6 @@ export const SAMPLE_PHOTOS = {
     { kind: 'pothole', seed: 7, label: 'Pothole' },
     { kind: 'traffic', seed: 5, label: 'Traffic light' },
     { kind: 'street', seed: 3, label: 'Street light' },
-    { kind: 'unrelated', seed: 1, label: 'Unrelated' },
   ],
   repair: {
     pothole: [

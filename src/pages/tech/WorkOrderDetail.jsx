@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { PageHead, RiskChip } from '../../components/tech.jsx';
 import { Alert, Empty, Icon, ImageInput, KV, Photo, SAMPLE_PHOTOS, SeverityBadge, SourceBadge, Spinner, StatusBadge, toast } from '../../components/ui.jsx';
 import MapView from '../../components/MapView.jsx';
-import { beginRepairVerification, completeWorkOrder, finishRepairVerification, setEnRoute, startWork, useStore, resubmitSupervisorTask } from '../../lib/store.js';
+import { beginRepairVerification, completeWorkOrder, finishRepairVerification, setEnRoute, startWork, useTechnicianStore, resubmitSupervisorTask } from '../../lib/store.js';
 import { categoryByLabel } from '../../lib/constants.js';
 import { verifyRepair } from '../../lib/ai.js';
 import { fmtCoords, getCurrentPosition, haversine } from '../../lib/geo.js';
@@ -84,12 +84,14 @@ function RepairEvidencePanel({ wo, cat }) {
 
   async function run() {
     setBusy(true);
+    try {
     const draft = { afterImage, afterName, location: loc, notes };
     beginRepairVerification(wo.id, draft);
     const result = await verifyRepair({ workOrder: wo, afterImage, filename: afterName, location: loc });
     finishRepairVerification(wo.id, result);
     setBusy(false);
     toast(result.ok ? 'Repair verified' : 'Repair verification failed', result.ok ? 'info' : 'error');
+    } catch (e) { toast(e.message, 'error'); } finally { setBusy(false); }
   }
 
   return (
@@ -172,7 +174,7 @@ function CorrectionPanel({ wo }) {
 
 export default function WorkOrderDetail() {
   const { id } = useParams();
-  const state = useStore();
+  const state = useTechnicianStore();
   const [showRepair, setShowRepair] = useState(false);
   const wo = state.workOrders.find((w) => w.id === id);
 
@@ -211,7 +213,7 @@ export default function WorkOrderDetail() {
         <div className="card" style={{ marginBottom: 16 }}>
           <h2>Repair Evidence</h2>
           <div className="comparison">
-            <Photo src={wo.image} alt="Before" tag="BEFORE" />
+            <Photo rotation={wo.imageRotation} src={wo.image} alt="Before" tag="BEFORE" />
             <Photo src={wo.completion?.afterImage} alt="After" tag="AFTER" tagClass="after" />
           </div>
           <ul className="check-list" style={{ marginTop: 16 }}>
@@ -226,7 +228,7 @@ export default function WorkOrderDetail() {
             <div className="metric"><div className="m-label">Completed</div><div className="m-value" style={{ fontSize: '.9rem' }}>{fmtDateTime(wo.completion?.completedAt)}</div></div>
           </div>
           {wo.completion?.notes && <p style={{ marginTop: 14 }}><strong>Technician notes:</strong> {wo.completion.notes}</p>}
-          <p className="muted small">This evidence is now part of the permanent report{asset ? <> and <Link to={`/technician/assets/${asset.id}`}>{asset.id}</Link> maintenance history</> : ''}.</p>
+          <p className="muted small">This evidence is now part of the permanent report{asset ? <> and <span>{asset.id}</span> maintenance history</> : ''}.</p>
         </div>
       )}
 
@@ -235,7 +237,7 @@ export default function WorkOrderDetail() {
           <div className="card">
             <h2>Original Report</h2>
             <div className="grid cols-2" style={{ alignItems: 'start' }}>
-              <Photo src={wo.image} alt="Original evidence" tag="ORIGINAL" empty="No image" />
+              <Photo rotation={wo.imageRotation} src={wo.image} alt="Original evidence" tag="ORIGINAL" empty="No image" />
               <KV
                 items={[
                   ['Report', report ? <Link key="r" to={`/technician/reports/${report.id}`} className="mono">{report.id}</Link> : wo.reportId],
@@ -270,7 +272,7 @@ export default function WorkOrderDetail() {
           <div className="card">
             <h2>Asset</h2>
             {asset ? (
-              <KV items={[['Asset ID', <Link key="a" to={`/technician/assets/${asset.id}`} className="mono">{asset.id}</Link>], ['Name', asset.name], ['Condition', asset.condition], ['Operational Status', asset.status], ['Last Maintenance', fmtDateTime(asset.lastMaintenance)]]} />
+              <KV items={[['Asset ID', <span key="a" className="mono">{asset.id}</span>], ['Name', asset.name], ['Condition', asset.condition], ['Operational Status', asset.status], ['Last Maintenance', fmtDateTime(asset.lastMaintenance)]]} />
             ) : (
               <p className="muted">No asset linked.</p>
             )}

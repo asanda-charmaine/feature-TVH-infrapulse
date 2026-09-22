@@ -12,14 +12,11 @@ import History from './pages/public/History.jsx';
 import CitizenReportDetail from './pages/public/ReportDetail.jsx';
 
 import Dashboard from './pages/tech/Dashboard.jsx';
-import AssetRegistry from './pages/tech/AssetRegistry.jsx';
-import AssetDetail from './pages/tech/AssetDetail.jsx';
 import GisMap from './pages/tech/GisMap.jsx';
 import Reports from './pages/tech/Reports.jsx';
 import TechReportDetail from './pages/tech/ReportDetail.jsx';
 import WorkOrders from './pages/tech/WorkOrders.jsx';
 import WorkOrderDetail from './pages/tech/WorkOrderDetail.jsx';
-import Analytics from './pages/tech/Analytics.jsx';
 import Notifications from './pages/tech/Notifications.jsx';
 import Profile from './pages/tech/Profile.jsx';
 
@@ -49,14 +46,11 @@ export default function App() {
         <Route path="/technician" element={<TechLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="assets" element={<AssetRegistry />} />
-          <Route path="assets/:id" element={<AssetDetail />} />
           <Route path="map" element={<GisMap />} />
           <Route path="reports" element={<Reports />} />
           <Route path="reports/:id" element={<TechReportDetail />} />
           <Route path="work-orders" element={<WorkOrders />} />
           <Route path="work-orders/:id" element={<WorkOrderDetail />} />
-          <Route path="analytics" element={<Analytics />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="profile" element={<Profile />} />
         </Route>
@@ -65,6 +59,7 @@ export default function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<SupervisorDashboard key="dashboard" />} />
           <Route path="review" element={<SupervisorDashboard key="review" view="review" />} />
+          <Route path="validation" element={<SupervisorDashboard key="validation" view="validation" />} />
           <Route path="assign" element={<SupervisorDashboard key="assign" view="assign" />} />
           <Route path="assigned" element={<SupervisorDashboard key="assigned" view="assigned" />} />
         </Route>

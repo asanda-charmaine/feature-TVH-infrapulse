@@ -33,7 +33,7 @@ export function buildMarkers(state, layers = ALL_LAYERS, opts = {}) {
       draggable: draggableAssets,
       onClick: onAssetClick ? () => onAssetClick(a) : undefined,
       onDrag: (lat, lng) => onAssetDrag?.(a.id, lat, lng),
-      popup: popup(`${a.id} · ${a.type}`, [a.name, `Status: ${a.status}`, `Condition: ${a.condition}`], `/technician/assets/${a.id}`),
+      popup: popup(`${a.id} · ${a.type}`, [a.name, `Status: ${a.status}`, `Condition: ${a.condition}`]),
     });
   });
 

@@ -2,9 +2,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MapView from './MapView.jsx';
-import ConnectorImageInput from './ConnectorImageInput.jsx';
-import { Alert, Icon, KV, Photo, SeverityBadge, StatusBadge } from './ui.jsx';
-import { useStore, connectDemoConnector, disconnectDemoConnectors, simulateIntegrationEvent, loginTechnician, loginSupervisor, storageWarning } from '../lib/store.js';
+import { Alert, Icon, KV, SeverityBadge, StatusBadge } from './ui.jsx';
+import { useStore, connectDemoConnector, disconnectDemoConnectors, simulateIntegrationEvent, loginSupervisor, storageWarning } from '../lib/store.js';
 import { fmtDateTime } from '../lib/format.js';
 
 const processingStatus = (r) => r.supervisorDismissal ? 'Dismissed'
@@ -16,16 +15,12 @@ export default function IntegrationDemo() {
   const state = useStore();
   const navigate = useNavigate();
   const connected = state.connectors || {};
-  const [tab, setTab] = useState('pothole');
   const [filter, setFilter] = useState('all');
-  const [inputImage, setInputImage] = useState(null);
-  const [imageBusy, setImageBusy] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [startedAt] = useState(() => new Date().toISOString());
   const reports = state.reports.filter((r) => r.integration);
   const latest = reports[0];
-  const pothole = reports.find((r) => r.integration.kind === 'pothole');
   const traffic = reports.find((r) => r.integration.kind === 'traffic');
   const asset = state.assets.find((a) => a.type === 'Traffic Light' && a.area === 'Pretoria CBD')
     || state.assets.find((a) => a.type === 'Traffic Light');
@@ -37,15 +32,14 @@ export default function IntegrationDemo() {
   function simulate(kind) {
     setError(''); setSuccess('');
     try {
-      simulateIntegrationEvent(kind, kind === 'pothole' ? inputImage || {} : {});
+      simulateIntegrationEvent(kind);
       setFilter('all');
-      setSuccess(kind === 'pothole' ? 'Pothole detection received and report created successfully.'
-        : 'Traffic-light fault received and maintenance report created.');
+      setSuccess('Traffic-light fault received and maintenance report created.');
     } catch (e) { setError(e.message); }
   }
   function openReports(id) {
-    loginTechnician();
-    navigate(id ? '/technician/reports/' + id : '/technician/reports');
+    loginSupervisor();
+    navigate('/supervisor/review' + (id ? '?report=' + encodeURIComponent(id) : ''));
   }
   function openSupervisor() {
     loginSupervisor();
@@ -68,18 +62,16 @@ export default function IntegrationDemo() {
     id: 'healthy-controller', lat: asset?.lat ?? -25.7463, lng: asset?.lng ?? 28.1891,
     kind: 'asset', title: sensor.trafficLightId + ' - Controller online; all signals working',
   });
-  const current = tab === 'pothole' ? pothole : traffic;
-  const steps = tab === 'pothole'
-    ? ['Computer Vision API', 'InfraPulse', 'Report Created', 'Map Updated', 'Supervisor Review']
-    : ['Traffic-Light Sensor', 'InfraPulse', 'Fault Detected', 'Report Created', 'Map Updated', 'Supervisor Review'];
+  const current = traffic;
+  const steps = ['Traffic-Light Sensor', 'InfraPulse', 'Fault Detected', 'Report Created', 'Map Updated', 'Supervisor Review'];
   return (
     <section className="stack" aria-labelledby="integration-title" style={{ margin: '32px 0' }}>
       <div>
         <h2 id="integration-title">Connected Infrastructure</h2>
-        <p className="muted">Connected Computer Vision API and traffic-light controllers feed reports, map updates and supervisor review.</p>
+        <p className="muted">Connected traffic-light controllers feed reports, map updates and supervisor review.</p>
       </div>
       <div className="grid cols-2" aria-label="External system connectors">
-        {[['pothole', 'Computer Vision / AI Connector', 'Computer Vision API', 'spark'], ['traffic', 'Traffic-Light Sensor Connector', 'Traffic-Light Sensors', 'traffic']].map(([kind, name, system, icon]) => (
+        {[['traffic', 'Traffic-Light Sensor Connector', 'Traffic-Light Sensors', 'traffic']].map(([kind, name, system, icon]) => (
           <div className="card stack-sm" key={kind}>
             <div className="btn-row"><Icon name={icon} size={28} /><h3>{name}</h3></div>
             <p className="muted">{system}</p>
@@ -88,36 +80,13 @@ export default function IntegrationDemo() {
           </div>
         ))}
       </div>
-      {(connected.pothole || connected.traffic) && <button type="button" className="btn btn-secondary" style={{ alignSelf: 'flex-start' }} onClick={() => {
+      {connected.traffic && <button type="button" className="btn btn-secondary" style={{ alignSelf: 'flex-start' }} onClick={() => {
         disconnectDemoConnectors();
-        setInputImage(null);
-        setImageBusy(false);
         setSuccess('');
         setError('');
       }}>End Demonstration</button>}
-      <div className="btn-row" aria-label="Connected infrastructure type">
-        <button className={'btn ' + (tab === 'pothole' ? 'btn-primary' : 'btn-secondary')} aria-pressed={tab === 'pothole'} onClick={() => { setTab('pothole'); setSuccess(''); }}>Potholes</button>
-        <button className={'btn ' + (tab === 'traffic' ? 'btn-primary' : 'btn-secondary')} aria-pressed={tab === 'traffic'} onClick={() => { setTab('traffic'); setSuccess(''); }}>Traffic Lights</button>
-      </div>
       <div className="card stack">
-        {!connected[tab] && <p className="muted">Connect the {tab === 'pothole' ? 'Computer Vision API' : 'Traffic-Light Sensors'} above to receive data.</p>}
-        {tab === 'pothole' ? (
-          <>
-            <h3>Computer Vision API</h3>
-            <ConnectorImageInput key={String(Boolean(connected.pothole))} disabled={!connected.pothole} value={inputImage} onChange={setInputImage} onBusyChange={setImageBusy} />
-            <button className="btn btn-primary" style={{ alignSelf: 'flex-start' }} disabled={!connected.pothole || imageBusy} onClick={() => simulate('pothole')}>Receive Pothole Detection</button>
-            {pothole ? <div className="grid cols-2">
-              <Photo src={pothole.image} alt="Connected Computer Vision API pothole detection" />
-              <KV items={[
-                ['Detection', pothole.integration.payload.detected],
-                ['Confidence', pothole.integration.payload.confidence + '%'],
-                ['Severity', pothole.severity], ['Location', pothole.location.address],
-                ['Timestamp', fmtDateTime(pothole.submittedAt)], ['Report ID', pothole.id],
-              ]} />
-            </div> : <p className="muted">Receive a connected image detection to create a High priority pothole report in Pretoria CBD.</p>}
-          </>
-        ) : (
-          <>
+        {!connected.traffic && <p className="muted">Connect the Traffic-Light Sensors above to receive data.</p>}
             <h3>Live Sensor Panel <span className="muted small">{connected.traffic ? '(connected controllers)' : '(not connected)'}</span></h3>
             {connected.traffic && <KV items={[
               ['Traffic Light ID', sensor.trafficLightId], ['Intersection', sensor.intersection],
@@ -127,8 +96,6 @@ export default function IntegrationDemo() {
               ['Last Update', fmtDateTime(sensor.lastUpdate)], ['Severity', traffic ? 'Critical' : 'Normal'],
             ]} />}
             <button className="btn btn-primary" style={{ alignSelf: 'flex-start' }} disabled={!connected.traffic} onClick={() => simulate('traffic')}>Receive Traffic Light Fault</button>
-          </>
-        )}
         <div role="status" aria-live="polite">
           {success && <Alert kind="success" title={success} />}
           {error && <Alert kind="error" title={error} />}

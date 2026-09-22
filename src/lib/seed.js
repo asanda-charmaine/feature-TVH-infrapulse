@@ -349,7 +349,7 @@ export function buildSeed() {
     { id: 'N-2', at: iso(todayAt(0.6)), type: 'report', title: 'New citizen report', body: 'INF-2026-00421 — Pothole / Road Damage, Pretoria CBD.', link: '/technician/reports/INF-2026-00421', read: false },
     { id: 'N-3', at: iso(todayAt(0.7)), type: 'workorder', title: 'Work order completed', body: 'Repair on INF-2026-00415 verified and closed.', link: '/technician/reports/INF-2026-00415', read: false },
     { id: 'N-4', at: iso(todayAt(0.2)), type: 'evidence', title: 'Evidence missing', body: 'INF-2026-00416 has no photographic evidence. Attach an image before creating a work order.', link: '/technician/reports/INF-2026-00416', read: true },
-    { id: 'N-5', at: iso(daysAgo(1, 16)), type: 'vehicle', title: 'Vehicle service overdue', body: 'VEH-0005 (GH 61 PS GP) requires maintenance.', link: '/technician/assets/VEH-0005', read: true },
+    { id: 'N-5', at: iso(daysAgo(1, 16)), type: 'vehicle', title: 'Vehicle service overdue', body: 'VEH-0005 (GH 61 PS GP) requires maintenance.', link: '/technician/map', read: true },
   ];
 
   const areas = [

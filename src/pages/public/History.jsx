@@ -1,22 +1,26 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Empty, Photo, StatusBadge } from '../../components/ui.jsx';
-import { useStore } from '../../lib/store.js';
+import { useStore, isOwnCitizenReport } from '../../lib/store.js';
 import { fmtDate } from '../../lib/format.js';
 
 export default function History() {
   const { reports } = useStore();
-  const mine = reports.filter((r) => r.mine).sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+  const [query, setQuery] = useState('');
+  const mine = reports.filter(isOwnCitizenReport)
+    .filter((r) => [r.id, r.category, r.location.address, r.status, fmtDate(r.submittedAt)].some((v) => String(v || '').toLowerCase().includes(query.trim().toLowerCase()))).sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
 
   return (
     <div className="page narrow">
       <div className="page-title">
         <h1>Report History</h1>
-        <p>Reports submitted from this device, plus a few demo reports. No account needed.</p>
+        <p>Reports submitted from this device. No account needed.</p>
       </div>
 
+      <input className="input" type="search" aria-label="Search Report History" placeholder="Search reference, category, location or status" value={query} onChange={(e) => setQuery(e.target.value)} style={{ marginBottom: 16 }} />
       {mine.length === 0 ? (
         <div className="card">
-          <Empty icon="reports" title="No reports yet">
+          <Empty icon="reports" title={query ? 'No matching reports' : 'No reports yet'}>
             Reports you submit will appear here so you can follow their progress.
           </Empty>
           <div className="btn-row" style={{ justifyContent: 'center' }}>
@@ -27,7 +31,7 @@ export default function History() {
         <div className="stack">
           {mine.map((r) => (
             <Link key={r.id} to={`/history/${r.id}`} className="report-card">
-              <Photo src={r.image} className="thumb" alt={`${r.category} photo`} />
+              <Photo rotation={r.imageRotation} src={r.image} className="thumb" alt={`${r.category} photo`} />
               <div className="info">
                 <div className="ref mono">{r.id}</div>
                 <div>{r.category}</div>
@@ -41,7 +45,6 @@ export default function History() {
       )}
       <div className="btn-row" style={{ marginTop: 22 }}>
         <Link to="/report" className="btn btn-primary">Log Another Report</Link>
-        <Link to="/" className="btn btn-ghost">Home</Link>
       </div>
     </div>
   );

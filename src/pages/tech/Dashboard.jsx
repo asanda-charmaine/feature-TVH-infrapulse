@@ -3,14 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import MapView from '../../components/MapView.jsx';
 import { PageHead, RiskChip, SectionLink, StatCard } from '../../components/tech.jsx';
 import { SeverityBadge, SourceBadge, StatusBadge, Empty } from '../../components/ui.jsx';
-import { useStore } from '../../lib/store.js';
+import { useTechnicianStore } from '../../lib/store.js';
 import { dashboardStats, priorityIssues, todaysWorkOrders } from '../../lib/stats.js';
 import { ALL_LAYERS, MAP_LEGEND, buildMarkers } from '../../lib/mapdata.js';
 import { severityFromRisk } from '../../lib/risk.js';
 import { DEMO_TECHNICIAN } from '../../lib/constants.js';
 
 export default function Dashboard() {
-  const state = useStore();
+  const state = useTechnicianStore();
   const navigate = useNavigate();
   const s = dashboardStats(state);
   const priority = priorityIssues(state.reports, 5);

@@ -4,7 +4,7 @@ import AssetForm from '../../components/AssetForm.jsx';
 import MapView from '../../components/MapView.jsx';
 import { PageHead } from '../../components/tech.jsx';
 import { Alert, Icon, Modal, toast } from '../../components/ui.jsx';
-import { addArea, moveAsset, removeArea, useStore } from '../../lib/store.js';
+import { addArea, moveAsset, removeArea, useTechnicianStore } from '../../lib/store.js';
 import { ALL_LAYERS, MAP_LEGEND, buildMarkers } from '../../lib/mapdata.js';
 import { fmtCoords } from '../../lib/geo.js';
 
@@ -35,7 +35,7 @@ const HELP = {
 };
 
 export default function GisMap() {
-  const state = useStore();
+  const state = useTechnicianStore();
   const navigate = useNavigate();
   const [layers, setLayers] = useState(ALL_LAYERS);
   const [mode, setMode] = useState('browse');

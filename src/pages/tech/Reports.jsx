@@ -2,14 +2,14 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHead, RiskChip } from '../../components/tech.jsx';
 import { Empty, ExportMenu, Icon, SeverityBadge, SourceBadge, StatusBadge, toast } from '../../components/ui.jsx';
-import { useStore, simulateAiDetection } from '../../lib/store.js';
+import { useTechnicianStore } from '../../lib/store.js';
 import { CATEGORIES, REPORT_STATUSES, SEVERITIES } from '../../lib/constants.js';
 import { fmtShortDate, startOfDay, toDateInput } from '../../lib/format.js';
 
 const DATE_OPTIONS = ['All', 'Today', 'This Week', 'This Month', 'Custom Range'];
 
 export default function Reports() {
-  const { reports, assets } = useStore();
+  const { reports, assets } = useTechnicianStore();
   const navigate = useNavigate();
   const [q, setQ] = useState('');
   const [source, setSource] = useState('All');
@@ -66,16 +66,7 @@ export default function Reports() {
 
   return (
     <>
-      <PageHead title="Reports" sub="All infrastructure issues submitted by citizens or detected by InfraPulse AI.">
-        <button
-          className="btn btn-secondary btn-sm"
-          onClick={() => {
-            const r = simulateAiDetection();
-            toast(`AI detected a new issue: ${r.id}`);
-          }}
-        >
-          <Icon name="spark" size={15} /> Receive Connected AI Detection
-        </button>
+      <PageHead title="Reports" sub="Reports linked to your assigned work orders.">
         <ExportMenu getTable={exportTable} />
       </PageHead>
 

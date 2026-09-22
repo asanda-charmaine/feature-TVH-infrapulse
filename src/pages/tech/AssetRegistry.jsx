@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import AssetForm from '../../components/AssetForm.jsx';
 import { PageHead, RiskChip } from '../../components/tech.jsx';
 import { ConditionBadge, Empty, ExportMenu, StatusBadge, toast, Icon } from '../../components/ui.jsx';
-import { useStore } from '../../lib/store.js';
+import { useTechnicianStore } from '../../lib/store.js';
 import { currentRisk } from '../../lib/stats.js';
 import { ASSET_CONDITIONS, ASSET_STATUSES, ASSET_TYPES, VEHICLE_STATUSES } from '../../lib/constants.js';
 import { fmtAge, fmtShortDate } from '../../lib/format.js';
 
 export default function AssetRegistry() {
-  const state = useStore();
+  const state = useTechnicianStore();
   const navigate = useNavigate();
   const [q, setQ] = useState('');
   const [type, setType] = useState('All');

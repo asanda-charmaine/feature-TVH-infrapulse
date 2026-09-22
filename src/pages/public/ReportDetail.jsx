@@ -1,14 +1,14 @@
 import { Link, useParams } from 'react-router-dom';
 import { Alert, KV, Photo, ReportTimeline, StatusBadge } from '../../components/ui.jsx';
 import MapView from '../../components/MapView.jsx';
-import { useStore } from '../../lib/store.js';
+import { useStore, isOwnCitizenReport } from '../../lib/store.js';
 import { fmtDate } from '../../lib/format.js';
 
 // Citizen view: strictly read-only. No risk score, technician, work order or asset data is shown.
 export default function CitizenReportDetail() {
   const { id } = useParams();
   const { reports } = useStore();
-  const r = reports.find((x) => x.id === id);
+  const r = reports.find((x) => x.id === id && isOwnCitizenReport(x));
 
   if (!r) {
     return (
@@ -35,11 +35,12 @@ export default function CitizenReportDetail() {
       <div className="stack">
         <div className="card">
           <div className="grid cols-2" style={{ alignItems: 'start' }}>
-            <Photo src={r.image} alt="Original photograph" tag="ORIGINAL" />
+            <Photo rotation={r.imageRotation} src={r.image} alt="Original photograph" tag="ORIGINAL" />
             <KV
               items={[
                 ['Reference', <span className="mono" key="r">{r.id}</span>],
                 ['Category', r.category],
+                ['Cellphone', r.cellphone || 'Not provided'],
                 ['Location', r.location.address],
                 ['Submitted', fmtDate(r.submittedAt)],
                 ['Status', <StatusBadge key="s" status={r.status} />],
@@ -64,7 +65,7 @@ export default function CitizenReportDetail() {
             </p>
             {r.afterImage && (
               <div className="comparison">
-                <Photo src={r.image} alt="Before repair" tag="BEFORE" />
+                <Photo rotation={r.imageRotation} src={r.image} alt="Before repair" tag="BEFORE" />
                 <Photo src={r.afterImage} alt="After repair" tag="AFTER" tagClass="after" />
               </div>
             )}

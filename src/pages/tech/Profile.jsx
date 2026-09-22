@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHead } from '../../components/tech.jsx';
 import { KV, Modal, toast } from '../../components/ui.jsx';
-import { logoutTechnician, resetDemo, useStore } from '../../lib/store.js';
+import { logoutTechnician, resetDemo, useTechnicianStore } from '../../lib/store.js';
 import { DEMO_TECHNICIAN } from '../../lib/constants.js';
 
 export default function Profile() {
-  const { workOrders } = useStore();
+  const { workOrders } = useTechnicianStore();
   const navigate = useNavigate();
   const [confirm, setConfirm] = useState(false);
   const mine = workOrders.filter((w) => w.technicianId === DEMO_TECHNICIAN.id);
